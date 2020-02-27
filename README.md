@@ -1,6 +1,6 @@
 # README
 
-## First cd into front end!!!
+## First cd into the "frontend" folder
 
 ### To install dependencies
 
@@ -9,3 +9,6 @@
 ### To run application
 
 `npm start`
+
+
+### Don't forget to create a branch :)
