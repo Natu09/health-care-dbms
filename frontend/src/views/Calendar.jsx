@@ -16,7 +16,7 @@ export default () => {
       defaultView="dayGridMonth"
       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
       handleWindowResize={true}
-      contentHeight={625}
+      themeSyste="bootstrap"
     />
   );
 };

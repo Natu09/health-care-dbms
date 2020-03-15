@@ -25,7 +25,8 @@ const dashboardRoutes = [
     path: "/calendar",
     name: "Calendar",
     icon: "pe-7s-date",
-    component: Calendar
+    component: Calendar,
+    layout: "/admin"
   },
   {
     path: "/typography",
