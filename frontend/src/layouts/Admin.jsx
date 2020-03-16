@@ -43,7 +43,6 @@ class Admin extends Component {
     }
     return "Brand";
   };
-
   componentDidUpdate(e) {
     if (
       window.innerWidth < 993 &&
