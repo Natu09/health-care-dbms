@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 
-import AdminNavbar from "components/Navbars/AdminNavbar";
+import AdminNavbar from "components/Navbars/AdminNavbar";       // Change later
 
 import Sidebar from "components/Sidebar/Sidebar";
 
-import routes from "routes.js";
+import routes from "routesDoc.js";
 
-class Admin extends Component {
+class Doctor extends Component {
   constructor(props) {
     super(props);
+    console.log(props)
+    console.log(this.props)
     this.state = {
       color: "red",
       hasImage: true
@@ -18,7 +20,7 @@ class Admin extends Component {
 
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/doctor") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -82,4 +84,4 @@ class Admin extends Component {
   }
 }
 
-export default Admin;
+export default Doctor;

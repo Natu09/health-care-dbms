@@ -10,12 +10,16 @@ import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
 
 import AdminLayout from "layouts/Admin.jsx";
+import DoctorLayout from "layouts/Doctor.jsx";
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
       <Route path="/admin" render={props => <AdminLayout {...props} />} />
-      <Redirect from="/" to="/admin/dashboard" />
+      <Redirect from="/admin" to="/admin/dashboard" />
+
+      <Route path="/doctor" render={props => <DoctorLayout {...props} />} />
+      <Redirect from="/doctor" to="/doctor/dashboard" />
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")
