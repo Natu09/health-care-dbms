@@ -30,6 +30,7 @@ export default class Calendar extends React.Component {
       eventColor: '#378006', // Greenish
       displayEventEnd: true,
       dateClick: this.handleDateClick,
+      eventClick: this.handleEventClick
     }
     this.state = {
       options
@@ -49,18 +50,11 @@ export default class Calendar extends React.Component {
     )
   }
 
-  // handleDateClick = (arg) => {
-  //   if (true) {
-  //     this.setState({  // add new event data
-  //       calendarEvents: this.state.calendarEvents.concat({ // creates a new array
-  //         title: 'New Event',
-  //         start: arg.date,
-  //         allDay: arg.allDay
-  //       })
-  //     })
-  //   }
-  // }
-
+    // This function handles what to do when a user clicks an event
+    // We can add more to confirm their selection and update the database
+    handleEventClick = (info) => {
+      alert(info.event.title + " was clicked");
+    }
 }
 
 // This is the function that will interact with our database
