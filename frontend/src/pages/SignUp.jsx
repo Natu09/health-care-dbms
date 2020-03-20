@@ -1,83 +1,40 @@
-import React, { Component } from 'react'
+import React, { useCallback } from "react";
+import { withRouter } from "react-router";
+import app from "../firebase";
 
-import { Grid, Row } from "react-bootstrap";
+const SignUp = ({ history }) => {
+  const handleSignUp = useCallback(
+    async event => {
+      event.preventDefault();
+      const { email, password } = event.target.elements;
+      try {
+        await app
+          .auth()
+          .createUserWithEmailAndPassword(email.value, password.value);
+        history.push("/");
+      } catch (error) {
+        alert(error);
+      }
+    },
+    [history]
+  );
 
-import { Card } from "components/Card/Card.jsx";
-import { FormInputs } from "components/FormInputs/FormInputs.jsx";
-import Button from "components/CustomButton/CustomButton.jsx";
+  return (
+    <div>
+      <h1>Sign up</h1>
+      <form onSubmit={handleSignUp}>
+        <label>
+          Email
+          <input name="email" type="email" placeholder="Email" />
+        </label>
+        <label>
+          Password
+          <input name="password" type="password" placeholder="Password" />
+        </label>
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+  );
+};
 
-class SignUp extends Component {
-    render() {
-        return (
-            <div className="content">
-            <Grid fluid>
-                <Row>
-                <Card
-                    title="Sign Up"
-                    content={
-                    <form>
-                        <FormInputs
-                        ncols={["col-md-6", "col-md-6"]}
-                        properties={[
-                            {
-                            label: "First name",
-                            type: "text",
-                            bsClass: "form-control",
-                            placeholder: "First name"
-                            },
-                            {
-                            label: "Last name",
-                            type: "text",
-                            bsClass: "form-control",
-                            placeholder: "Last name"
-                            }
-                        ]}
-                        />
-                        <FormInputs
-                        ncols={["col-md-12"]}
-                        properties={[
-                            {
-                            label: "Email Address",
-                            type: "text",
-                            bsClass: "form-control",
-                            placeholder: "firstname.lastname@ahs.ca"
-                            }
-                        ]}
-                        />
-                        <FormInputs
-                        ncols={["col-md-12"]}
-                        properties={[
-                            {
-                            label: "Enter a Password",
-                            type: "text",
-                            bsClass: "form-control",
-                            placeholder: "1234"
-                            }
-                        ]}
-                        />
-                        <FormInputs
-                        ncols={["col-md-12"]}
-                        properties={[
-                            {
-                            label: "Re-enter your Password",
-                            type: "text",
-                            bsClass: "form-control",
-                            placeholder: "1234"
-                            }
-                        ]}
-                        />
-                        <Button bsStyle="info" pullRight fill type="submit">
-                        Register
-                        </Button>
-                        <div className="clearfix" />
-                    </form>
-                    }
-                />
-                </Row>
-            </Grid>   
-            </div>
-        )
-    }
-}
-
-export default SignUp
+export default withRouter(SignUp);

@@ -1,5 +1,5 @@
-import React from 'react'
-import { BrowserRouter, Route} from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Route } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/animate.min.css";
@@ -14,16 +14,15 @@ import { AuthProvider } from "Auth";
 import PrivateRoute from "PrivateRoute";
 
 const App = () => {
-    return (
+  return (
     <AuthProvider>
-        <BrowserRouter>
-            <PrivateRoute exact path="/" component={TempPage} />
-            <Route exact path="/login" component={LogInPage} />
-        </BrowserRouter>
+      <BrowserRouter>
+        <PrivateRoute exact path="/" component={TempPage} />
+        <Route exact path="/login" component={LogInPage} />
+        <Route exact path="/signup" component={SignUpPage} />
+      </BrowserRouter>
     </AuthProvider>
-
-    )
-}
-
+  );
+};
 
 export default App;
