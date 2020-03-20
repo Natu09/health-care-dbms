@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import app from "../firebase";
+import app, { db } from "../firebase";
 
 const SignUp = ({ history }) => {
+  const userRef = db.collection("Users");
   const handleSignUp = useCallback(
     async event => {
       event.preventDefault();
@@ -10,7 +11,12 @@ const SignUp = ({ history }) => {
       try {
         await app
           .auth()
-          .createUserWithEmailAndPassword(email.value, password.value);
+          .createUserWithEmailAndPassword(email.value, password.value)
+          .then(cred => {
+            return userRef.doc(cred.user.uid).set({
+              role: "patient"
+            })
+          })
         history.push("/");
       } catch (error) {
         alert(error);

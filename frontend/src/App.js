@@ -9,16 +9,14 @@ import "./assets/css/pe-icon-7-stroke.css";
 
 import LogInPage from "./pages/LogIn";
 import SignUpPage from "./pages/SignUp";
-import TempPage from "./pages/Temp";
 import { AuthProvider } from "Auth";
 import PrivateRoute from "PrivateRoute";
-import AdminLayout from "layouts/Admin.jsx";
 
 const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <PrivateRoute exact path="/" component={AdminLayout} />
+        <PrivateRoute exact path="/" />
         <Route exact path="/login" component={LogInPage} />
         <Route exact path="/signup" component={SignUpPage} />
       </BrowserRouter>
