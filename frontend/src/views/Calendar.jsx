@@ -35,18 +35,24 @@ export default class Calendar extends React.Component {
     this.state = {
       options
     };
-  }  
+  }
 
   render() {
     const { options } = this.state;
-    return (
-      <div className='calendar'>
-        <FullCalendar 
-        {...options}
-        events={getEvents()}
-        />
-      </div>
+    const mystyle = {
+        color: "pink",
+  backgroundColor: "pink",
+  padding: "10px",
+  fontFamily: "Arial"
 
+};
+    return (
+      <div className='calendar' style = {mystyle}>
+        <FullCalendar
+
+        {...options}
+        events={getEvents()}/>
+      </div>
     )
   }
 
@@ -63,15 +69,14 @@ function getEvents() {
   return (
   [
     {
-      title: 'Dr. House', 
+      title: 'Dr. House',
       start: '2020-03-18T12:30:00',
       end: '2020-03-18T15:30:00'
     },
     {
-      title: "Dr. Wilson", 
+      title: "Dr. Wilson",
       start: new Date(),
       end: new Date().setHours(15)
     }
   ]);
 }
-  
