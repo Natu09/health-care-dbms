@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { NavItem, Nav } from "react-bootstrap";
-import app from "../firebase";
+import app from "../../firebase";
 
-
+const user = app.auth().currentUser;
 class AdminNavbarLinks extends Component {
   render() {
     return (
