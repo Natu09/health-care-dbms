@@ -9,6 +9,7 @@ import "@fullcalendar/core/main.css";
 import "@fullcalendar/daygrid/main.css";
 import "@fullcalendar/timegrid/main.css";
 import "@fullcalendar/list/main.css";
+import { getRelevantEvents } from "@fullcalendar/core";
 
 
 export default class Calendar extends React.Component {
@@ -26,44 +27,27 @@ export default class Calendar extends React.Component {
 
       plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
       ref:  this.calendarComponentRef,
-      //weekends={ this.state.calendarWeekends }
-      events: [ // initial event data
-        {  
-          title: 'Dr. Wilson', 
-          start: new Date().setHours(15), 
-          end: new Date()//"2020-03-20:00:00",
-        }
-      ],
-      eventColor: '#378006',
+      eventColor: '#378006', // Greenish
       displayEventEnd: true,
       dateClick: this.handleDateClick,
     }
     this.state = {
       options
     };
-  }
-
+  }  
 
   render() {
     const { options } = this.state;
     return (
       <div className='calendar'>
-        <FullCalendar {...options}/>
+        <FullCalendar 
+        {...options}
+        events={getEvents()}
+        />
       </div>
 
     )
   }
-
-  // toggleWeekends = () => {
-  //   this.setState({ // update a property
-  //     calendarWeekends: !this.state.calendarWeekends
-  //   })
-  // }
-
-  // gotoPast = () => {
-  //   let calendarApi = this.calendarComponentRef.current.getApi()
-  //   calendarApi.gotoDate('2000-01-01') // call a method on the Calendar object
-  // }
 
   // handleDateClick = (arg) => {
   //   if (true) {
@@ -78,16 +62,22 @@ export default class Calendar extends React.Component {
   // }
 
 }
-// function Calendar ({...props}){
-//   return (
-//     <FullCalendar
-//       defaultView="dayGridMonth"
-//       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-//       handleWindowResize={true}
-//       themeSyste="bootstrap"   
-//     />
-   
-//   );
-// }
 
-// export default Calendar;
+// This is the function that will interact with our database
+// Needs to return an array of events in this form
+function getEvents() {
+  return (
+  [
+    {
+      title: 'Dr. House', 
+      start: '2020-03-18T12:30:00',
+      end: '2020-03-18T15:30:00'
+    },
+    {
+      title: "Dr. Wilson", 
+      start: new Date(),
+      end: new Date().setHours(15)
+    }
+  ]);
+}
+  
