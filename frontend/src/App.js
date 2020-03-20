@@ -12,12 +12,13 @@ import SignUpPage from "./pages/SignUp";
 import TempPage from "./pages/Temp";
 import { AuthProvider } from "Auth";
 import PrivateRoute from "PrivateRoute";
+import AdminLayout from "layouts/Admin.jsx";
 
 const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <PrivateRoute exact path="/" component={TempPage} />
+        <PrivateRoute exact path="/" component={AdminLayout} />
         <Route exact path="/login" component={LogInPage} />
         <Route exact path="/signup" component={SignUpPage} />
       </BrowserRouter>

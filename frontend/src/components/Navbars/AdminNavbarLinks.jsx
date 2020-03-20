@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { NavItem, Nav } from "react-bootstrap";
+import app from "../firebase";
+
 
 class AdminNavbarLinks extends Component {
   render() {
@@ -10,7 +12,7 @@ class AdminNavbarLinks extends Component {
             Account
           </NavItem>
 
-          <NavItem eventKey={3} href="#">
+          <NavItem onClick={() => app.auth().signOut()} href="#">
             Log out
           </NavItem>
         </Nav>
