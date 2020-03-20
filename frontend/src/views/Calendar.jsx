@@ -38,15 +38,9 @@ export default class Calendar extends React.Component {
 
   render() {
     const { options } = this.state;
-    const mystyle = {
-        color: "pink",
-  backgroundColor: "pink",
-  padding: "10px",
-  fontFamily: "Arial"
 
-};
     return (
-      <div className='calendar' style = {mystyle}>
+      <div className='calendar' style = {{width: 800, backgroundColor: "lightblue"}}>
         <FullCalendar
 
         {...options}
