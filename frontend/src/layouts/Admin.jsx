@@ -5,7 +5,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar";
 
 import Sidebar from "components/Sidebar/Sidebar";
 
-import routes from "routes.js";
+import routes from "../routes/routes";
 
 class Admin extends Component {
   constructor(props) {

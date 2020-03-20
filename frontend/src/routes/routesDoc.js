@@ -1,6 +1,6 @@
-import Dashboard from "views/Dashboard.jsx";
-import UserProfile from "views/UserProfile.jsx";
-import Calendar from "views/Calendar.jsx";
+import Dashboard from "../views/Dashboard.jsx";
+import UserProfile from "../views/UserProfile.jsx";
+import Calendar from "../views/Calendar.jsx";
 
 
 const dashboardRoutes = [

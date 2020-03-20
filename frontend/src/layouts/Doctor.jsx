@@ -5,7 +5,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar";       // Change later
 
 import Sidebar from "components/Sidebar/Sidebar";
 
-import routes from "routesDoc.js";
+import routes from "../routes/routesDoc";
 
 class Doctor extends Component {
   constructor(props) {
