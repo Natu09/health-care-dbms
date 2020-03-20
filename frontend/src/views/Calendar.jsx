@@ -28,9 +28,9 @@ export default class Calendar extends React.Component {
       ref:  this.calendarComponentRef,
       //weekends={ this.state.calendarWeekends }
       events: [ // initial event data
-        {  
-          title: 'Dr. Wilson', 
-          start: new Date().setHours(15), 
+        {
+          title: 'Dr. Wilson',
+          start: new Date().setHours(15),
           end: new Date()//"2020-03-20:00:00",
         }
       ],
@@ -46,11 +46,17 @@ export default class Calendar extends React.Component {
 
   render() {
     const { options } = this.state;
+    const mystyle = {
+  color: "pink",
+  backgroundColor: "pink",
+  padding: "10px",
+  fontFamily: "Arial"
+  
+};
     return (
-      <div className='calendar'>
+      <div className='calendar' style = {mystyle}>
         <FullCalendar {...options}/>
       </div>
-
     )
   }
 
@@ -78,15 +84,16 @@ export default class Calendar extends React.Component {
   // }
 
 }
+
 // function Calendar ({...props}){
 //   return (
 //     <FullCalendar
 //       defaultView="dayGridMonth"
 //       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
 //       handleWindowResize={true}
-//       themeSyste="bootstrap"   
+//       themeSyste="bootstrap"
 //     />
-   
+
 //   );
 // }
 
