@@ -54,7 +54,10 @@ export default class Calendar extends React.Component {
     // This function handles what to do when a user clicks an event
     // We can add more to confirm their selection and update the database
     handleEventClick = (info) => {
-      alert(info.event.title + " was clicked");
+      if (window.confirm("Do you want to book this appointment?")){
+        // Add code here to actually book this in database
+        alert("Your appointment with " + info.event.title + " was booked");
+      }
     }
 }
 
