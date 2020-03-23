@@ -2,7 +2,6 @@ import Dashboard from "../views/Dashboard.jsx";
 import UserProfile from "../views/UserProfile.jsx";
 import Calendar from "../views/Calendar.jsx";
 
-
 const dashboardRoutes = [
   {
     path: "/dashboard",
@@ -24,7 +23,7 @@ const dashboardRoutes = [
     icon: "pe-7s-date",
     component: Calendar,
     layout: "/doctor",
-    id: 3       // Remove later
+    id: 3 // Remove later
   }
 ];
 
