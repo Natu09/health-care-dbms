@@ -27,7 +27,6 @@ const App = () => {
           <PrivateRoute exact path="/Typography" component={Admin} />
           <PrivateRoute exact path="/Icons" component={Admin} />
           <PrivateRoute exact path="/Maps" component={Admin} />
-          <PrivateRoute exact path="/Calendar" component={Admin} />
           <PrivateRoute exact path="/Notifications" component={Admin} />
         </div>
       </BrowserRouter>
