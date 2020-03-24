@@ -1,25 +1,17 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 
-import AdminNavbar from "components/Navbars/AdminNavbar";
+import AdminNavbar from "components/Navbars/AdminNavbar";       // Change later
 
 import Sidebar from "components/Sidebar/Sidebar";
 
-import routes from "../routes/routes";
+import routes from "../routes/routesDoc";
 
-import PrivateRoute from "../PrivateRoute";
-
-import Dashboard from "views/Dashboard.jsx";
-import UserProfile from "views/UserProfile.jsx";
-import Calendar from "views/Calendar.jsx";
-import Typography from "views/Typography.jsx";
-import Icons from "views/Icons.jsx";
-import Maps from "views/Maps.jsx";
-import Notifications from "views/Notifications.jsx";
-
-class Admin extends Component {
+class Doctor extends Component {
   constructor(props) {
     super(props);
+    console.log(props)
+    console.log(this.props)
     this.state = {
       color: "red",
       hasImage: true
@@ -28,15 +20,20 @@ class Admin extends Component {
 
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/doctor") {
         return (
-          <Route render={props => <prop.component {...props} />} key={key} />
+          <Route
+            path={prop.layout + prop.path}
+            render={props => <prop.component {...props} />}
+            key={key}
+          />
         );
       } else {
         return null;
       }
     });
   };
+
   getBrandText = path => {
     for (let i = 0; i < routes.length; i++) {
       if (
@@ -49,6 +46,7 @@ class Admin extends Component {
     }
     return "Brand";
   };
+
   componentDidUpdate(e) {
     if (
       window.innerWidth < 993 &&
@@ -63,6 +61,7 @@ class Admin extends Component {
       this.refs.mainPanel.scrollTop = 0;
     }
   }
+  
   render() {
     return (
       <div className="wrapper">
@@ -78,24 +77,11 @@ class Admin extends Component {
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
-          <Switch>
-            <PrivateRoute exact path="/" component={Dashboard} />
-            <PrivateRoute exact path="/dashboard" component={Dashboard} />
-            <PrivateRoute exact path="/user" component={UserProfile} />
-            <PrivateRoute exact path="/Typography" component={Typography} />
-            <PrivateRoute exact path="/Icons" component={Icons} />
-            <PrivateRoute exact path="/Maps" component={Maps} />
-            <PrivateRoute exact path="/Calendar" component={Calendar} />
-            <PrivateRoute
-              exact
-              path="/Notifications"
-              component={Notifications}
-            />
-          </Switch>
-          {/* <Switch>{this.getRoutes(routes)}</Switch> */}
+          <Switch>{this.getRoutes(routes)}</Switch>
         </div>
       </div>
     );
   }
 }
-export default Admin;
+
+export default Doctor;
