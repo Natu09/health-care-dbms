@@ -79,7 +79,7 @@ class Admin extends Component {
             brandText={this.getBrandText(this.props.location.pathname)}
           />
           <Switch>
-            <PrivateRoute exact path="/" component={Dashboard} />
+            <PrivateRoute exact path="/patient" component={Dashboard} />
             <PrivateRoute exact path="/dashboard" component={Dashboard} />
             <PrivateRoute exact path="/user" component={UserProfile} />
             <PrivateRoute exact path="/Typography" component={Typography} />
@@ -92,7 +92,7 @@ class Admin extends Component {
               component={Notifications}
             />
           </Switch>
-          {/* <Switch>{this.getRoutes(routes)}</Switch> */}
+          {/* <Switch>{component={this.getRoutes(routes)}}</Switch> */}
         </div>
       </div>
     );

@@ -15,8 +15,8 @@ const SignUp = ({ history }) => {
           .then(cred => {
             return userRef.doc(cred.user.uid).set({
               role: "patient"
-            })
-          })
+            });
+          });
         history.push("/");
       } catch (error) {
         alert(error);

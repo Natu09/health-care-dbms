@@ -1,17 +1,21 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 
-import AdminNavbar from "components/Navbars/AdminNavbar";       // Change later
+import AdminNavbar from "components/Navbars/AdminNavbar"; // Change later
 
 import Sidebar from "components/Sidebar/Sidebar";
 
 import routes from "../routes/routesDoc";
 
+import PrivateRoute from "../PrivateRoute";
+
+import docCalendar from "views/docCalendar.jsx";
+
 class Doctor extends Component {
   constructor(props) {
     super(props);
-    console.log(props)
-    console.log(this.props)
+    console.log(props);
+    console.log(this.props);
     this.state = {
       color: "red",
       hasImage: true
@@ -61,7 +65,7 @@ class Doctor extends Component {
       this.refs.mainPanel.scrollTop = 0;
     }
   }
-  
+
   render() {
     return (
       <div className="wrapper">
@@ -77,7 +81,10 @@ class Doctor extends Component {
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
-          <Switch>{this.getRoutes(routes)}</Switch>
+          <Switch>
+            <PrivateRoute exact path="/doctor" component={docCalendar} />
+            <PrivateRoute exact path="/doc" component={docCalendar} />
+          </Switch>
         </div>
       </div>
     );

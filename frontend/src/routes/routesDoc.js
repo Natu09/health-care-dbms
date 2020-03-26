@@ -1,27 +1,11 @@
-import Dashboard from "../views/Dashboard.jsx";
-import UserProfile from "../views/UserProfile.jsx";
-import Calendar from "../views/Calendar.jsx";
+import docCalendar from "../views/docCalendar.jsx";
 
 const dashboardRoutes = [
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: "pe-7s-graph",
-    component: Dashboard,
-    layout: "/doctor"
-  },
-  {
-    path: "/user",
-    name: "User Profile",
-    icon: "pe-7s-user",
-    component: UserProfile,
-    layout: "/doctor"
-  },
-  {
-    path: "/calendar",
+    path: "/doctor",
     name: "Calendar",
     icon: "pe-7s-date",
-    component: Calendar,
+    component: docCalendar,
     layout: "/doctor",
     id: 3 // Remove later
   }

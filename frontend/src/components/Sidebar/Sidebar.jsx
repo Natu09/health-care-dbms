@@ -62,7 +62,6 @@ class Sidebar extends Component {
             {this.state.width <= 991 ? <AdminNavbarLinks /> : null}
             {this.props.routes.map((prop, key) => {
               if (!prop.redirect) {
-                console.log(prop.path);
                 return (
                   <li className={this.activeRoute(prop.path)} key={key}>
                     <NavLink
