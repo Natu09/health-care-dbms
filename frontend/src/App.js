@@ -11,6 +11,7 @@ import LogInPage from "./pages/LogIn";
 import SignUpPage from "./pages/SignUp";
 import Admin from "./layouts/Admin.jsx";
 import Doctor from "./layouts/Doctor.jsx";
+import Nurse from "./layouts/Nurse.jsx";
 import { AuthProvider } from "Auth";
 import PrivateRoute from "./PrivateRoute";
 
@@ -22,6 +23,7 @@ const App = () => {
           <Route exact path="/login" component={LogInPage} />
           <Route exact path="/signup" component={SignUpPage} />
 
+          {/* ALL THE PRIVATE ROUTES FOR A PATIENT */}
           <PrivateRoute exact path="/patient" component={Admin} />
           <PrivateRoute exact path="/user" component={Admin} />
           <PrivateRoute exact path="/dashboard" component={Admin} />
@@ -31,7 +33,11 @@ const App = () => {
           <PrivateRoute exact path="/Maps" component={Admin} />
           <PrivateRoute exact path="/Notifications" component={Admin} />
 
+          {/* ALL THE PRIVATE ROUTES FOR A DOCTOR */}
           <PrivateRoute exact path="/doctor" component={Doctor} />
+
+          {/* ALL THE PRIVATE ROUTES FOR A NURSE */}
+          <PrivateRoute exact path="/nurse" component={Nurse} />
         </div>
       </BrowserRouter>
     </AuthProvider>

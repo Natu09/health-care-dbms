@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import app, { db } from "../firebase";
 
 const SignUp = ({ history }) => {
-  const userRef = db.collection("Users");
   const handleSignUp = useCallback(
     async event => {
       event.preventDefault();
@@ -13,11 +12,14 @@ const SignUp = ({ history }) => {
           .auth()
           .createUserWithEmailAndPassword(email.value, password.value)
           .then(cred => {
-            return userRef.doc(cred.user.uid).set({
-              role: "patient"
-            });
+            return db
+              .collection("Users")
+              .doc(cred.user.uid)
+              .set({
+                role: "patient"
+              });
           });
-        history.push("/");
+        history.push("/patient");
       } catch (error) {
         alert(error);
       }

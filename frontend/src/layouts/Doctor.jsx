@@ -48,7 +48,7 @@ class Doctor extends Component {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return "Doctor";
   };
 
   componentDidUpdate(e) {
