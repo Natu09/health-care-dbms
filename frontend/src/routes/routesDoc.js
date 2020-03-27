@@ -1,13 +1,11 @@
-import docCalendar from "../views/docCalendar.jsx";
+import Calendar from "../views/Calendar.jsx";
 
 const dashboardRoutes = [
   {
     path: "/doctor",
     name: "Calendar",
     icon: "pe-7s-date",
-    component: docCalendar,
-    layout: "/doctor",
-    id: 3 // Remove later
+    component: Calendar
   }
 ];
 

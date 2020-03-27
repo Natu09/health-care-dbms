@@ -2,53 +2,60 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import AdminNavbar from "components/Navbars/AdminNavbar"; // Change later
-
 import Sidebar from "components/Sidebar/Sidebar";
-
-import routes from "../routes/routesDoc";
-
-import PrivateRoute from "../PrivateRoute";
-
 import docCalendar from "views/docCalendar.jsx";
 
+import routes from "../routes/routesDoc";
+import PrivateRoute from "../PrivateRoute";
+import { AuthContext } from "../Auth";
+
+import { db } from "../firebase";
+
 class Doctor extends Component {
+  static contextType = AuthContext;
+
   constructor(props) {
     super(props);
     console.log(props);
     console.log(this.props);
     this.state = {
       color: "red",
-      hasImage: true
+      hasImage: true,
+      user: ""
     };
   }
 
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/doctor") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            render={props => <prop.component {...props} />}
-            key={key}
-          />
-        );
-      } else {
-        return null;
-      }
+      return (
+        <Route
+          path={prop.layout + prop.path}
+          render={props => <prop.component {...props} />}
+          key={key}
+        />
+      );
     });
   };
 
-  getBrandText = path => {
-    for (let i = 0; i < routes.length; i++) {
-      if (
-        this.props.location.pathname.indexOf(
-          routes[i].layout + routes[i].path
-        ) !== -1
-      ) {
-        return routes[i].name;
-      }
+  /**
+   * Find query the doctor name
+   *
+   */
+  getDoctorName = dID => {
+    const cont = this.context;
+    console.log(cont.currentUser.uid);
+
+    try {
+      db.collection("Users")
+        .doc(cont.currentUser.uid)
+        .get()
+        .then(doc => {
+          console.log(doc.data().lname);
+          return "Doctor";
+        });
+    } catch (error) {
+      return "???";
     }
-    return "Doctor";
   };
 
   componentDidUpdate(e) {
@@ -66,6 +73,23 @@ class Doctor extends Component {
     }
   }
 
+  componentDidMount() {
+    const cont = this.context;
+    console.log(cont.currentUser.uid);
+
+    try {
+      db.collection("Users")
+        .doc(cont.currentUser.uid)
+        .get()
+        .then(doc => {
+          console.log(doc.data().lname);
+          this.setState({ user: doc.data().lname });
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div className="wrapper">
@@ -79,7 +103,8 @@ class Doctor extends Component {
         <div id="main-panel" className="main-panel" ref="mainPanel">
           <AdminNavbar
             {...this.props}
-            brandText={this.getBrandText(this.props.location.pathname)}
+            // brandText={this.getDoctorName(this.props.location.pathname)}
+            brandText={"Hello Dr. " + this.state.user}
           />
           <Switch>
             <PrivateRoute exact path="/doctor" component={docCalendar} />
