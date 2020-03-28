@@ -34,38 +34,98 @@ export default function DocCalendar(props) {
    */
   function getEvents() {
     const docApt = [];
+    console.log(currentUser.uid)
 
-    db.collection("Appointment")
-      .where("status", "==", "open")
-      .get()
-      .then(function(querySnapshot) {
-        querySnapshot.forEach(doc => {
-          // Reformating time format for full calendar event
+    var query1 = db.collection("Appointment").where("status", "==", "open")
+    var query2 = db.collection("Appointment").where("patientID", "==", currentUser.uid)
 
-          // Seting the Unix time
-          const epochStart = doc.data().start.seconds;
-          const epochEnd = doc.data().end.seconds;
+    query1.get()
+          .then(function(querySnapshot) {
+            querySnapshot.forEach(doc => {
+              // Reformating time format for full calendar event
 
-          // Initilizing new Date objets
-          let start = new Date(0);
-          let end = new Date(0);
+              // Seting the Unix time
+              const epochStart = doc.data().start.seconds;
+              const epochEnd = doc.data().end.seconds;
 
-          // Set date object times to Unix time from event object
-          start.setUTCSeconds(epochStart);
-          end.setUTCSeconds(epochEnd);
+              // Initilizing new Date objets
+              let start = new Date(0);
+              let end = new Date(0);
 
-          const event = doc.data();
-          event.start = start;
-          event.end = end;
+              // Set date object times to Unix time from event object
+              start.setUTCSeconds(epochStart);
+              end.setUTCSeconds(epochEnd);
 
-          // Set apt colour here
+              const event = doc.data();
+              event.start = start;
+              event.end = end;
 
-          docApt.push(event);
-        });
-      })
-      .then(() => {
-        setEvents(docApt);
-      });
+              // Set apt colour here
+
+              docApt.push(event);
+            });
+          });
+      query2.get()
+            .then(function(querySnapshot) {
+              querySnapshot.forEach(doc => {
+                // Reformating time format for full calendar event
+
+                // Seting the Unix time
+                const epochStart = doc.data().start.seconds;
+                const epochEnd = doc.data().end.seconds;
+
+                // Initilizing new Date objets
+                let start = new Date(0);
+                let end = new Date(0);
+
+                // Set date object times to Unix time from event object
+                start.setUTCSeconds(epochStart);
+                end.setUTCSeconds(epochEnd);
+
+                const event = doc.data();
+                event.start = start;
+                event.end = end;
+
+                // Set apt colour here
+
+                docApt.push(event);
+              });
+            })
+            .then(() => {
+              setEvents(docApt);
+            });
+
+    // db.collection("Appointment")
+    //   .where("status", "==", "open")
+    //   .get()
+    //   .then(function(querySnapshot) {
+    //     querySnapshot.forEach(doc => {
+    //       // Reformating time format for full calendar event
+    //
+    //       // Seting the Unix time
+    //       const epochStart = doc.data().start.seconds;
+    //       const epochEnd = doc.data().end.seconds;
+    //
+    //       // Initilizing new Date objets
+    //       let start = new Date(0);
+    //       let end = new Date(0);
+    //
+    //       // Set date object times to Unix time from event object
+    //       start.setUTCSeconds(epochStart);
+    //       end.setUTCSeconds(epochEnd);
+    //
+    //       const event = doc.data();
+    //       event.start = start;
+    //       event.end = end;
+    //
+    //       // Set apt colour here
+    //
+    //       docApt.push(event);
+    //     });
+    //   })
+    //   .then(() => {
+    //     setEvents(docApt);
+    //   });
   }
 
   useEffect(() => {
