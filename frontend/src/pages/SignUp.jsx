@@ -6,7 +6,7 @@ const SignUp = ({ history }) => {
   const handleSignUp = useCallback(
     async event => {
       event.preventDefault();
-      const { email, password } = event.target.elements;
+      const { Fname, Lname, email, password } = event.target.elements;
       try {
         await app
           .auth()
@@ -16,7 +16,9 @@ const SignUp = ({ history }) => {
               .collection("Users")
               .doc(cred.user.uid)
               .set({
-                role: "patient"
+                role: "patient",
+                First_name: Fname.value,
+                Last_name: Lname.value
               });
           });
         history.push("/patient");
@@ -33,16 +35,24 @@ const SignUp = ({ history }) => {
       <form onSubmit={handleSignUp}>
         <label>
           Email
+          <input name="Fname" type="text" placeholder="first" />
+        </label>
+        <label>
+          Email
+          <input name="Lname" type="text" placeholder="last" />
+        </label>
+        <label>
+          Email
           <input name="email" type="email" placeholder="Email" />
         </label>
         <label>
           Password
           <input name="password" type="password" placeholder="Password" />
         </label>
-        <label>
+        {/* <label>
           Confirm Password
           <input name="password" type="password" placeholder="Password" />
-        </label>
+        </label> */}
         <button type="submit">Sign Up</button>
       </form>
       <div>
