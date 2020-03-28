@@ -36,48 +36,65 @@ const SignUp = ({ history }) => {
   );
 
   return (
-    <div align="center">
-      <h1 align="center">Sign Up</h1>
-      <form onSubmit={handleSignUp}>
-        <div>
-          <label style={label}>
-            First Name{" "}
-            <input name="Fname" type="text" placeholder="First" required />
-          </label>
+    <div class="row mt-5">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="card card-body">
+          <h1 class="text-center mb-3">Sign Up</h1>
+          <form onSubmit={handleSignUp}>
+            <div class="form-group">
+              <label for="name">First Name</label>
+              <input
+                type="text"
+                id="Fname"
+                name="Fname"
+                class="form-control"
+                placeholder="Enter First Name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="name">Last Name</label>
+              <input
+                type="text"
+                id="Lname"
+                name="Lname"
+                class="form-control"
+                placeholder="Enter Last Name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="Enter Email"
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Create Password"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              style={{ border: "2px solid green", color: "green" }}
+            >
+              Sign Up
+            </button>
+          </form>
+          <p align="center">
+            Already have an account? <a href="/login">Login</a>
+          </p>
         </div>
-        <div>
-          <label style={label}>
-            Last Name{" "}
-            <input name="Lname" type="text" placeholder="Last" required />
-          </label>
-        </div>
-        <div>
-          <label style={label}>
-            Email{" "}
-            <input name="email" type="email" placeholder="Email" required />
-          </label>
-        </div>
-        <div>
-          <label style={label}>
-            Password{" "}
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              required
-            />
-          </label>
-        </div>
-        <button type="submit" align="center">
-          Sign Up
-        </button>
-      </form>
-      <div>
-        <label>Already have an account?</label>
-        <a href="/login" class="button">
-          {" "}
-          Click here to Log In
-        </a>
       </div>
     </div>
   );
