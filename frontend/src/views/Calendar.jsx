@@ -41,19 +41,19 @@ export default function DocCalendar(props) {
     
     query.get()
         .then(function(doc) {
-          alert("test")
           if (doc.exists){
             if (doc.data().status == "open"){
-              alert("Is open")
+              if (window.confirm("Do you want to book this appointment?")){
+                alert("Appointment Booked") // TODO update firebase
+              }
             }
             if (doc.data().status == "booked"){
-              alert("Is Booked")
+              if (window.confirm("Do you want to cancel this appointment?")){
+                alert("Appointment Cancelled") // TODO update firebase
+              }
             }
           }
         });
-    // if (window.confirm('Are you sure you wish to delete this item?')){
-    //   alert(info.event.id)
-    // } 
   }
 
   /**
