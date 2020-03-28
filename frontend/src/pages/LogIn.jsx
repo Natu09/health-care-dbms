@@ -66,7 +66,8 @@ const Login = ({ history }) => {
       <div>
         <label>Are you a new user?</label>
         <a href="signup" class="button">
-          Click here to create a new account
+          {" "}
+          Click here to create an account
         </a>
       </div>
     </div>

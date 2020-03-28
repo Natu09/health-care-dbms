@@ -48,6 +48,7 @@ const SignUp = ({ history }) => {
       <div>
         <label>Already have an account?</label>
         <a href="/login" class="button">
+          {" "}
           Click here to Log In
         </a>
       </div>
