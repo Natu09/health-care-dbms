@@ -95,37 +95,6 @@ export default function DocCalendar(props) {
               setEvents(docApt);
             });
 
-    // db.collection("Appointment")
-    //   .where("status", "==", "open")
-    //   .get()
-    //   .then(function(querySnapshot) {
-    //     querySnapshot.forEach(doc => {
-    //       // Reformating time format for full calendar event
-    //
-    //       // Seting the Unix time
-    //       const epochStart = doc.data().start.seconds;
-    //       const epochEnd = doc.data().end.seconds;
-    //
-    //       // Initilizing new Date objets
-    //       let start = new Date(0);
-    //       let end = new Date(0);
-    //
-    //       // Set date object times to Unix time from event object
-    //       start.setUTCSeconds(epochStart);
-    //       end.setUTCSeconds(epochEnd);
-    //
-    //       const event = doc.data();
-    //       event.start = start;
-    //       event.end = end;
-    //
-    //       // Set apt colour here
-    //
-    //       docApt.push(event);
-    //     });
-    //   })
-    //   .then(() => {
-    //     setEvents(docApt);
-    //   });
   }
 
   useEffect(() => {
