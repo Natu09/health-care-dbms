@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import AdminNavbar from "components/Navbars/AdminNavbar"; // Change later
 import Sidebar from "components/Sidebar/Sidebar";
-import docCalendar from "../views/DocCalendar";
+import docCalendar from "../views/docCalendar";
 
 import routes from "../routes/routesDoc";
 import PrivateRoute from "../PrivateRoute";
