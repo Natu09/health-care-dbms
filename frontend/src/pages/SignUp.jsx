@@ -39,8 +39,18 @@ const SignUp = ({ history }) => {
           Password
           <input name="password" type="password" placeholder="Password" />
         </label>
+        <label>
+          Confirm Password
+          <input name="password" type="password" placeholder="Password" />
+        </label>
         <button type="submit">Sign Up</button>
       </form>
+      <div>
+        <label>Already have an account?</label>
+        <a href="/login" class="button">
+          Click here to Log In
+        </a>
+      </div>
     </div>
   );
 };
