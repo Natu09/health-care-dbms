@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
+import Popup from 'react-popup';
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -13,6 +15,8 @@ import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
 export default function DocCalendar(props) {
+
+
   const { currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
 
@@ -31,16 +35,33 @@ export default function DocCalendar(props) {
   
   };
 
+
   function handleEventClick(info){
-    alert(info.event.title + " was clicked");
+    var query = db.collection("Appointment").doc(info.event.id)
+    
+    query.get()
+        .then(function(doc) {
+          alert("test")
+          if (doc.exists){
+            if (doc.data().status == "open"){
+              alert("Is open")
+            }
+            if (doc.data().status == "booked"){
+              alert("Is Booked")
+            }
+          }
+        });
+    // if (window.confirm('Are you sure you wish to delete this item?')){
+    //   alert(info.event.id)
+    // } 
   }
-  
+
   /**
    * Retrieves all events related to the doctos
    */
   function getEvents() {
     const docApt = [];
-    console.log(currentUser.uid)
+    // console.log(currentUser.uid)
 
     var query1 = db.collection("Appointment").where("status", "==", "open")
     var query2 = db.collection("Appointment").where("patientID", "==", currentUser.uid)
@@ -65,6 +86,7 @@ export default function DocCalendar(props) {
               const event = doc.data();
               event.start = start;
               event.end = end;
+              event.id = doc.id;
 
               // Set apt colour here
 
@@ -91,6 +113,7 @@ export default function DocCalendar(props) {
                 const event = doc.data();
                 event.start = start;
                 event.end = end;
+                event.id = doc.id;
 
                 // Set apt colour here
 
