@@ -33,8 +33,8 @@ export default function DocCalendar(props) {
    * Retrieves all events related to the doctos
    */
   function getEvents() {
-    const docApt = [];
-
+    const userEvents = [];
+    
     db.collection("Appointment")
       .where("status", "==", "open")
       .get()
@@ -60,11 +60,11 @@ export default function DocCalendar(props) {
 
           // Set apt colour here
 
-          docApt.push(event);
+          userEvents.push(event);
         });
       })
       .then(() => {
-        setEvents(docApt);
+        setEvents(userEvents);
       });
   }
 
