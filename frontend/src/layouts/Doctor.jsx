@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import AdminNavbar from "components/Navbars/AdminNavbar"; // Change later
 import Sidebar from "components/Sidebar/Sidebar";
-import docCalendar from "views/docCalendar.jsx";
+import docCalendar from "../views/DocCalendar";
 
 import routes from "../routes/routesDoc";
 import PrivateRoute from "../PrivateRoute";
@@ -21,7 +21,7 @@ class Doctor extends Component {
     this.state = {
       color: "red",
       hasImage: true,
-      user: ""
+      lname: ""
     };
   }
 
@@ -35,27 +35,6 @@ class Doctor extends Component {
         />
       );
     });
-  };
-
-  /**
-   * Find query the doctor name
-   *
-   */
-  getDoctorName = dID => {
-    const cont = this.context;
-    console.log(cont.currentUser.uid);
-
-    try {
-      db.collection("Users")
-        .doc(cont.currentUser.uid)
-        .get()
-        .then(doc => {
-          console.log(doc.data().lname);
-          return "Doctor";
-        });
-    } catch (error) {
-      return "???";
-    }
   };
 
   componentDidUpdate(e) {
@@ -75,15 +54,14 @@ class Doctor extends Component {
 
   componentDidMount() {
     const cont = this.context;
-    console.log(cont.currentUser.uid);
 
+    // Get the user lastname and set the sate of user lastname
     try {
       db.collection("Users")
         .doc(cont.currentUser.uid)
         .get()
         .then(doc => {
-          console.log(doc.data().lname);
-          this.setState({ user: doc.data().lname });
+          this.setState({ lname: doc.data().lname });
         });
     } catch (error) {
       console.log(error);
@@ -103,8 +81,7 @@ class Doctor extends Component {
         <div id="main-panel" className="main-panel" ref="mainPanel">
           <AdminNavbar
             {...this.props}
-            // brandText={this.getDoctorName(this.props.location.pathname)}
-            brandText={"Hello Dr. " + this.state.user}
+            brandText={"Hello Dr. " + this.state.lname}
           />
           <Switch>
             <PrivateRoute exact path="/doctor" component={docCalendar} />

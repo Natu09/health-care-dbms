@@ -5,11 +5,11 @@ import AdminNavbar from "components/Navbars/AdminNavbar"; // Change later
 
 import Sidebar from "components/Sidebar/Sidebar";
 
-import routes from "../routes/routesNurse";
+import routes from "../routes/routes";
 
 import PrivateRoute from "../PrivateRoute";
 
-import nurseCalendar from "views/docCalendar.jsx";
+import nurseCalendar from "views/Calendar.jsx";
 
 class Doctor extends Component {
   constructor(props) {
