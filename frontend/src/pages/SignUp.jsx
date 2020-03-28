@@ -2,6 +2,12 @@ import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import app, { db } from "../firebase";
 
+const label = {
+  display: "inline-block",
+  width: "230px",
+  textAlign: "right"
+};
+
 const SignUp = ({ history }) => {
   const handleSignUp = useCallback(
     async event => {
@@ -30,30 +36,41 @@ const SignUp = ({ history }) => {
   );
 
   return (
-    <div>
-      <h1>Sign up</h1>
+    <div align="center">
+      <h1 align="center">Sign Up</h1>
       <form onSubmit={handleSignUp}>
-        <label>
-          Email
-          <input name="Fname" type="text" placeholder="first" />
-        </label>
-        <label>
-          Email
-          <input name="Lname" type="text" placeholder="last" />
-        </label>
-        <label>
-          Email
-          <input name="email" type="email" placeholder="Email" />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" placeholder="Password" />
-        </label>
-        {/* <label>
-          Confirm Password
-          <input name="password" type="password" placeholder="Password" />
-        </label> */}
-        <button type="submit">Sign Up</button>
+        <div>
+          <label style={label}>
+            First Name{" "}
+            <input name="Fname" type="text" placeholder="First" required />
+          </label>
+        </div>
+        <div>
+          <label style={label}>
+            Last Name{" "}
+            <input name="Lname" type="text" placeholder="Last" required />
+          </label>
+        </div>
+        <div>
+          <label style={label}>
+            Email{" "}
+            <input name="email" type="email" placeholder="Email" required />
+          </label>
+        </div>
+        <div>
+          <label style={label}>
+            Password{" "}
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              required
+            />
+          </label>
+        </div>
+        <button type="submit" align="center">
+          Sign Up
+        </button>
       </form>
       <div>
         <label>Already have an account?</label>

@@ -6,6 +6,11 @@ import Patient from "layouts/Admin.jsx";
 import Doctor from "layouts/Doctor.jsx";
 import Nurse from "layouts/Nurse.jsx";
 
+const label = {
+  display: "inline-block",
+  width: "230px",
+  textAlign: "right"
+};
 const Login = ({ history }) => {
   const handleLogin = useCallback(
     async event => {
@@ -50,17 +55,20 @@ const Login = ({ history }) => {
   // }
 
   return (
-    <div>
-      <h1>Log in</h1>
+    <div align="center">
+      <h1 align="center">Log in</h1>
       <form onSubmit={handleLogin}>
-        <label>
-          Email
-          <input name="email" type="email" placeholder="Email" />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" placeholder="Password" />
-        </label>
+        <div>
+          <label style={label}>
+            Email <input name="email" type="email" placeholder="Email" />
+          </label>
+        </div>
+        <div>
+          <label style={label}>
+            Password{" "}
+            <input name="password" type="password" placeholder="Password" />
+          </label>
+        </div>
         <button type="submit">Log in</button>
       </form>
       <div>
