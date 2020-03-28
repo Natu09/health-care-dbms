@@ -26,9 +26,15 @@ export default function DocCalendar(props) {
     },
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     eventColor: "#378006", // Greenish
-    displayEventEnd: true
+    displayEventEnd: true,
+    eventClick: handleEventClick,
+  
   };
 
+  function handleEventClick(info){
+    alert(info.event.title + " was clicked");
+  }
+  
   /**
    * Retrieves all events related to the doctos
    */
