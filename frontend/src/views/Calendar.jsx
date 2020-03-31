@@ -32,24 +32,38 @@ export default function DocCalendar(props) {
     eventColor: "#378006", // Greenish
     displayEventEnd: true,
     eventClick: handleEventClick,
-  
+
   };
 
 
   function handleEventClick(info){
     var query = db.collection("Appointment").doc(info.event.id)
-    
+
     query.get()
         .then(function(doc) {
           if (doc.exists){
             if (doc.data().status == "open"){
               if (window.confirm("Do you want to book this appointment?")){
-                alert("Appointment Booked") // TODO update firebase
+                query.update({
+                  status: "booked",
+                  patientID: currentUser.uid,
+                  title: "booked Appointment"
+                })
+                alert("Appointment Booked") // done
               }
             }
             if (doc.data().status == "booked"){
               if (window.confirm("Do you want to cancel this appointment?")){
-                alert("Appointment Cancelled") // TODO update firebase
+                query.update({
+                              status: "open",
+                              patientID: "N/A",
+                              title: "Open Appointment"
+                              })
+
+
+                alert("Appointment Cancelled") // done
+
+
               }
             }
           }
