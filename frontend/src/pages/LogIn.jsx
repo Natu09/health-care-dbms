@@ -9,22 +9,22 @@ import Nurse from "layouts/Nurse.jsx";
 const label = {
   display: "inline-block",
   width: "230px",
-  textAlign: "right"
+  textAlign: "right",
 };
 const Login = ({ history }) => {
   const handleLogin = useCallback(
-    async event => {
+    async (event) => {
       event.preventDefault();
       const { email, password } = event.target.elements;
       try {
         await app
           .auth()
           .signInWithEmailAndPassword(email.value, password.value)
-          .then(cred => {
+          .then((cred) => {
             db.collection("Users")
               .doc(cred.user.uid)
               .get()
-              .then(function(doc) {
+              .then(function (doc) {
                 if (doc.data().role === "patient") {
                   history.push("/patient");
                   return <Redirect to="/patient" component={Patient} />;
