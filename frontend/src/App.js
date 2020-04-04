@@ -15,27 +15,23 @@ import Nurse from "./layouts/Nurse.jsx";
 import { AuthProvider } from "Auth";
 import PrivateRoute from "./PrivateRoute";
 
+import Temp from "./pages/Temp"; // Just for testing purposes
+
 const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
         <div>
+          <Route exact path="/test" component={Temp} />{" "}
           <Route exact path="/login" component={LogInPage} />
           <Route exact path="/signup" component={SignUpPage} />
-
           {/* ALL THE PRIVATE ROUTES FOR A PATIENT */}
           <PrivateRoute exact path="/patient" component={Admin} />
-          <PrivateRoute exact path="/user" component={Admin} />
-          <PrivateRoute exact path="/dashboard" component={Admin} />
           <PrivateRoute exact path="/Calendar" component={Admin} />
-          <PrivateRoute exact path="/Typography" component={Admin} />
-          <PrivateRoute exact path="/Icons" component={Admin} />
-          <PrivateRoute exact path="/Maps" component={Admin} />
-          <PrivateRoute exact path="/Notifications" component={Admin} />
-
           {/* ALL THE PRIVATE ROUTES FOR A DOCTOR */}
           <PrivateRoute exact path="/doctor" component={Doctor} />
-
+          <PrivateRoute exact path="/docCalendar" component={Doctor} />
+          <PrivateRoute exact path="/editApts" component={Doctor} />
           {/* ALL THE PRIVATE ROUTES FOR A NURSE */}
           <PrivateRoute exact path="/nurse" component={Nurse} />
         </div>

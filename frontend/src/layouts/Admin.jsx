@@ -9,35 +9,30 @@ import routes from "../routes/routes";
 
 import PrivateRoute from "../PrivateRoute";
 
-import Dashboard from "views/Dashboard.jsx";
 import UserProfile from "views/UserProfile.jsx";
 import Calendar from "views/Calendar.jsx";
-import Typography from "views/Typography.jsx";
-import Icons from "views/Icons.jsx";
-import Maps from "views/Maps.jsx";
-import Notifications from "views/Notifications.jsx";
 
 class Admin extends Component {
   constructor(props) {
     super(props);
     this.state = {
       color: "red",
-      hasImage: true
+      hasImage: true,
     };
   }
 
-  getRoutes = routes => {
+  getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
-          <Route render={props => <prop.component {...props} />} key={key} />
+          <Route render={(props) => <prop.component {...props} />} key={key} />
         );
       } else {
         return null;
       }
     });
   };
-  getBrandText = path => {
+  getBrandText = (path) => {
     for (let i = 0; i < routes.length; i++) {
       if (
         this.props.location.pathname.indexOf(
@@ -79,18 +74,8 @@ class Admin extends Component {
             brandText={this.getBrandText(this.props.location.pathname)}
           />
           <Switch>
-            <PrivateRoute exact path="/patient" component={Dashboard} />
-            <PrivateRoute exact path="/dashboard" component={Dashboard} />
-            <PrivateRoute exact path="/user" component={UserProfile} />
-            <PrivateRoute exact path="/Typography" component={Typography} />
-            <PrivateRoute exact path="/Icons" component={Icons} />
-            <PrivateRoute exact path="/Maps" component={Maps} />
+            <PrivateRoute exact path="/patient" component={UserProfile} />
             <PrivateRoute exact path="/Calendar" component={Calendar} />
-            <PrivateRoute
-              exact
-              path="/Notifications"
-              component={Notifications}
-            />
           </Switch>
           {/* <Switch>{component={this.getRoutes(routes)}}</Switch> */}
         </div>
