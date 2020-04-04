@@ -9,9 +9,9 @@ import routes from "../routes/routesNurse";
 
 import PrivateRoute from "../PrivateRoute";
 
-import nurseCalendar from "views/docCalendar.jsx";
+import nurseCalendar from "views/nurseCalendar.jsx";
 
-class Doctor extends Component {
+class Nurse extends Component {
   constructor(props) {
     super(props);
     console.log(props);
@@ -91,4 +91,4 @@ class Doctor extends Component {
   }
 }
 
-export default Doctor;
+export default Nurse;
