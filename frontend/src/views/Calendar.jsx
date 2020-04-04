@@ -1,75 +1,146 @@
-// import { Calendar } from "@fullcalendar/core";
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
+// import Popup from "react-popup";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-// import listPlugin from "@fullcalendar/list";
-// import bootstrapPlugin from "@fullcalendar/bootstrap";
+
 import "@fullcalendar/core/main.css";
 import "@fullcalendar/daygrid/main.css";
 import "@fullcalendar/timegrid/main.css";
 import "@fullcalendar/list/main.css";
-// import { getRelevantEvents } from "@fullcalendar/core";
 
-export default class Calendar extends React.Component {
-  //calendarComponentRef = React.createRef();
-  constructor(props) {
-    super(props);
+import { AuthContext } from "../Auth";
+import { db } from "../firebase";
 
-    const options = {
-      defaultView: "dayGridMonth",
-      header: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
-      },
+export default function DocCalendar(props) {
+  const { currentUser } = useContext(AuthContext);
+  const [events, setEvents] = useState([]);
 
-      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-      ref: this.calendarComponentRef,
-      eventColor: "#378006", // Greenish
-      displayEventEnd: true,
-      dateClick: this.handleDateClick,
-      eventClick: this.handleEventClick
-    };
-    this.state = {
-      options
-    };
-  }
-
-  render() {
-    const { options } = this.state;
-
-    return (
-      <div className="calendar">
-        <FullCalendar {...options} events={getEvents()} />
-      </div>
-    );
-  }
-
-  // This function handles what to do when a user clicks an event
-  // We can add more to confirm their selection and update the database
-  handleEventClick = info => {
-    if (window.confirm("Do you want to book this appointment?")) {
-      // Add code here to actually book this in database
-      alert("Your appointment with " + info.event.title + " was booked");
-    }
-  };
-}
-
-// This is the function that will interact with our database
-// Needs to return an array of events in this form
-function getEvents() {
-  return [
-    {
-      title: "Dr. House",
-      start: "2020-03-18T12:30:00",
-      end: "2020-03-18T15:30:00"
+  /// Options for the calendar component
+  const options = {
+    defaultView: "dayGridMonth",
+    header: {
+      left: "prev,next today",
+      center: "title",
+      right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
     },
-    {
-      title: "Dr. Wilson",
-      start: new Date(),
-      end: new Date().setHours(15)
-    }
-  ];
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    eventColor: "#378006", // Greenish
+    displayEventEnd: true,
+    eventClick: handleEventClick,
+  };
+
+  function handleEventClick(info) {
+    var query = db.collection("Appointment").doc(info.event.id);
+
+    query.get().then(function (doc) {
+      if (doc.exists) {
+        if (doc.data().status === "open") {
+          if (window.confirm("Do you want to book this appointment?")) {
+            query.update({
+              status: "booked",
+              patientID: currentUser.uid,
+              title: "booked Appointment",
+            });
+            alert("Appointment Booked"); // done
+          }
+        }
+        if (doc.data().status === "booked") {
+          if (window.confirm("Do you want to cancel this appointment?")) {
+            query.update({
+              status: "open",
+              patientID: "N/A",
+              title: "Open Appointment",
+            });
+
+            alert("Appointment Cancelled"); // done
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Retrieves all events related to the doctos
+   */
+  function getEvents() {
+    const docApt = [];
+    // console.log(currentUser.uid)
+
+    var query1 = db.collection("Appointment").where("status", "==", "open");
+    var query2 = db
+      .collection("Appointment")
+      .where("patientID", "==", currentUser.uid);
+
+    query1.get().then(function (querySnapshot) {
+      querySnapshot.forEach((doc) => {
+        // Reformating time format for full calendar event
+
+        // Seting the Unix time
+        const epochStart = doc.data().start.seconds;
+        const epochEnd = doc.data().end.seconds;
+
+        // Initilizing new Date objets
+        let start = new Date(0);
+        let end = new Date(0);
+
+        // Set date object times to Unix time from event object
+        start.setUTCSeconds(epochStart);
+        end.setUTCSeconds(epochEnd);
+
+        const event = doc.data();
+        event.start = start;
+        event.end = end;
+        event.id = doc.id;
+
+        // Set apt colour here
+
+        docApt.push(event);
+      });
+    });
+    query2
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach((doc) => {
+          // Reformating time format for full calendar event
+
+          // Seting the Unix time
+          const epochStart = doc.data().start.seconds;
+          const epochEnd = doc.data().end.seconds;
+
+          // Initilizing new Date objets
+          let start = new Date(0);
+          let end = new Date(0);
+
+          // Set date object times to Unix time from event object
+          start.setUTCSeconds(epochStart);
+          end.setUTCSeconds(epochEnd);
+
+          const event = doc.data();
+          event.start = start;
+          event.end = end;
+          event.id = doc.id;
+
+          // Set apt colour here
+
+          docApt.push(event);
+        });
+      })
+      .then(() => {
+        setEvents(docApt);
+      });
+  }
+
+  useEffect(() => {
+    getEvents(); // Change event state and mount
+  });
+
+  // Render view
+  return (
+    <div className="calendar">
+      <FullCalendar {...options} events={events} />
+    </div>
+  );
 }
