@@ -2,11 +2,17 @@ import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import app, { db } from "../firebase";
 
+const label = {
+  display: "inline-block",
+  width: "230px",
+  textAlign: "right"
+};
+
 const SignUp = ({ history }) => {
   const handleSignUp = useCallback(
     async event => {
       event.preventDefault();
-      const { email, password } = event.target.elements;
+      const { Fname, Lname, email, password } = event.target.elements;
       try {
         await app
           .auth()
@@ -16,7 +22,9 @@ const SignUp = ({ history }) => {
               .collection("Users")
               .doc(cred.user.uid)
               .set({
-                role: "patient"
+                role: "patient",
+                First_name: Fname.value,
+                Last_name: Lname.value
               });
           });
         history.push("/patient");
@@ -28,19 +36,66 @@ const SignUp = ({ history }) => {
   );
 
   return (
-    <div>
-      <h1>Sign up</h1>
-      <form onSubmit={handleSignUp}>
-        <label>
-          Email
-          <input name="email" type="email" placeholder="Email" />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" placeholder="Password" />
-        </label>
-        <button type="submit">Sign Up</button>
-      </form>
+    <div class="row mt-5">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="card card-body">
+          <h1 class="text-center mb-3">Sign Up</h1>
+          <form onSubmit={handleSignUp}>
+            <div class="form-group">
+              <label for="name">First Name</label>
+              <input
+                type="text"
+                id="Fname"
+                name="Fname"
+                class="form-control"
+                placeholder="Enter First Name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="name">Last Name</label>
+              <input
+                type="text"
+                id="Lname"
+                name="Lname"
+                class="form-control"
+                placeholder="Enter Last Name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="Enter Email"
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Create Password"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              style={{ border: "2px solid green", color: "green" }}
+            >
+              Sign Up
+            </button>
+          </form>
+          <p align="center">
+            Already have an account? <a href="/login">Login</a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
