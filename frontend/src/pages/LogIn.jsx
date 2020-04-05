@@ -9,22 +9,22 @@ import Nurse from "layouts/Nurse.jsx";
 const label = {
   display: "inline-block",
   width: "230px",
-  textAlign: "right"
+  textAlign: "right",
 };
 const Login = ({ history }) => {
   const handleLogin = useCallback(
-    async event => {
+    async (event) => {
       event.preventDefault();
       const { email, password } = event.target.elements;
       try {
         await app
           .auth()
           .signInWithEmailAndPassword(email.value, password.value)
-          .then(cred => {
+          .then((cred) => {
             db.collection("Users")
               .doc(cred.user.uid)
               .get()
-              .then(function(doc) {
+              .then(function (doc) {
                 if (doc.data().role === "patient") {
                   history.push("/patient");
                   return <Redirect to="/patient" component={Patient} />;
@@ -47,23 +47,28 @@ const Login = ({ history }) => {
   const { currentUser } = useContext(AuthContext);
 
   console.log(currentUser);
-  // if (db.collection("Users").doc(user.uid)) {
-
-  // }
-  // if (currentUser) {
-  //   return <Redirect to="/" />;
-  // }
 
   return (
-    <div class="row mt-5">
-      <div class="col-md-6 col-md-offset-3 =">
-        <div class="card card-body">
-          <h1 class="text-center mb-3">
-            <i class="fas fa-sign-in-alt"></i> Login
+    <div>
+      <div class="col-md-6 col-md-offset-3">
+        <div class="card card-body text-dark">
+          <h1
+            class="text-center mb-3"
+            style={{ fontWeight: "bold", color: "#000000" }}
+          >
+            AHS LOGIN
           </h1>
-          <form onSubmit={handleLogin}>
+          <form
+            onSubmit={handleLogin}
+            style={{
+              paddingLeft: "20px",
+              paddingRight: "20px",
+            }}
+          >
             <div class="form-group">
-              <label for="email">Email</label>
+              <label for="email" style={{ color: "#000000" }}>
+                Email
+              </label>
               <input
                 type="email"
                 id="email"
@@ -74,7 +79,9 @@ const Login = ({ history }) => {
               />
             </div>
             <div class="form-group">
-              <label for="password">Password</label>
+              <label for="password" style={{ color: "#000000" }}>
+                Password
+              </label>
               <input
                 type="password"
                 id="password"
