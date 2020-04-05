@@ -5,27 +5,24 @@ import app, { db } from "../firebase";
 const label = {
   display: "inline-block",
   width: "230px",
-  textAlign: "right"
+  textAlign: "right",
 };
 
 const SignUp = ({ history }) => {
   const handleSignUp = useCallback(
-    async event => {
+    async (event) => {
       event.preventDefault();
       const { Fname, Lname, email, password } = event.target.elements;
       try {
         await app
           .auth()
           .createUserWithEmailAndPassword(email.value, password.value)
-          .then(cred => {
-            return db
-              .collection("Users")
-              .doc(cred.user.uid)
-              .set({
-                role: "patient",
-                First_name: Fname.value,
-                Last_name: Lname.value
-              });
+          .then((cred) => {
+            return db.collection("Users").doc(cred.user.uid).set({
+              role: "patient",
+              First_name: Fname.value,
+              Last_name: Lname.value,
+            });
           });
         history.push("/patient");
       } catch (error) {
@@ -36,13 +33,26 @@ const SignUp = ({ history }) => {
   );
 
   return (
-    <div class="row mt-5">
+    <div>
       <div class="col-md-6 col-md-offset-3">
         <div class="card card-body">
-          <h1 class="text-center mb-3">Sign Up</h1>
-          <form onSubmit={handleSignUp}>
+          <h1
+            class="text-center mb-3"
+            style={{ fontWeight: "bold", color: "#000000" }}
+          >
+            AHS SIGN UP
+          </h1>
+          <form
+            onSubmit={handleSignUp}
+            style={{
+              paddingLeft: "20px",
+              paddingRight: "20px",
+            }}
+          >
             <div class="form-group">
-              <label for="name">First Name</label>
+              <label for="name" style={{ color: "#000000" }}>
+                First Name
+              </label>
               <input
                 type="text"
                 id="Fname"
@@ -53,7 +63,9 @@ const SignUp = ({ history }) => {
               />
             </div>
             <div class="form-group">
-              <label for="name">Last Name</label>
+              <label for="name" style={{ color: "#000000" }}>
+                Last Name
+              </label>
               <input
                 type="text"
                 id="Lname"
@@ -64,7 +76,9 @@ const SignUp = ({ history }) => {
               />
             </div>
             <div class="form-group">
-              <label for="email">Email</label>
+              <label for="email" style={{ color: "#000000" }}>
+                Email
+              </label>
               <input
                 type="email"
                 id="email"
@@ -74,7 +88,9 @@ const SignUp = ({ history }) => {
               />
             </div>
             <div class="form-group">
-              <label for="password">Password</label>
+              <label for="password" style={{ color: "#000000" }}>
+                Password
+              </label>
               <input
                 type="password"
                 id="password"
