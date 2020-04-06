@@ -20,8 +20,8 @@ const SignUp = ({ history }) => {
           .then((cred) => {
             return db.collection("Users").doc(cred.user.uid).set({
               role: "patient",
-              First_name: Fname.value,
-              Last_name: Lname.value,
+              fname: Fname.value,
+              lname: Lname.value,
             });
           });
         history.push("/patient");
