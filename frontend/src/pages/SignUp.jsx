@@ -22,6 +22,7 @@ const SignUp = ({ history }) => {
               role: "patient",
               First_name: Fname.value,
               Last_name: Lname.value,
+              email: email.value,
             });
           });
         history.push("/patient");

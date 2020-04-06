@@ -14,23 +14,9 @@ import "@fullcalendar/list/main.css";
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-export default function DocCalendar(props) {
+export default () => {
   const { currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
-
-  /// Options for the calendar component
-  const options = {
-    defaultView: "dayGridMonth",
-    header: {
-      left: "prev,next today",
-      center: "title",
-      right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-    },
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    eventColor: "#378006", // Greenish
-    displayEventEnd: true,
-    eventClick: handleEventClick,
-  };
 
   function handleEventClick(info) {
     var query = db.collection("Appointment").doc(info.event.id);
@@ -139,8 +125,19 @@ export default function DocCalendar(props) {
 
   // Render view
   return (
-    <div className="calendar">
-      <FullCalendar {...options} events={events} />
-    </div>
+    <FullCalendar
+      defaultView="dayGridMonth"
+      header={{
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+      }}
+      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+      handleWindowResize={true}
+      events={events}
+      themeSyste="bootstrap"
+      displayEventEnd={true}
+      eventClick={handleEventClick}
+    />
   );
-}
+};

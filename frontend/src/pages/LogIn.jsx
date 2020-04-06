@@ -47,6 +47,13 @@ const Login = ({ history }) => {
   const { currentUser } = useContext(AuthContext);
 
   console.log(currentUser);
+  // var query = db.collection("User").where("patientID", "==", currentUser.uid);
+  // console.log(query);
+  // console.log(db.collection("Users").doc(user.uid));
+
+  if (currentUser) {
+    return <Redirect to="/patient" />;
+  }
 
   return (
     <div>
