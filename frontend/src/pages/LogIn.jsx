@@ -42,13 +42,14 @@ const Login = ({ history }) => {
   const { currentUser } = useContext(AuthContext);
   console.log(currentUser);
 
-  // console.log(query);
   // console.log(db.collection("Users").doc(user.uid));
 
   // if the current users role is patient then redirect to patient
   if (currentUser) {
     return <Redirect to="/patient" />;
   }
+  // else if current users role is a doctor then redirect them to the doctor layout
+  // else if current users role is a nurse then redirect them to the nurse layout
 
   return (
     <div>

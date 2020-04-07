@@ -5,7 +5,13 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { Modal, Button } from "react-bootstrap";
+
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import "@fullcalendar/core/main.css";
 import "@fullcalendar/daygrid/main.css";
@@ -18,34 +24,44 @@ import { db } from "../firebase";
 export default () => {
   const { currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+  const [open, setOpen] = React.useState(false);
 
-  // function handleEventClick(info) {
-  //   var query = db.collection("Appointment").doc(info.event.id);
-  //   query.get().then(function (doc) {
-  //     if (doc.exists) {
-  //       if (doc.data().status === "open") {
-  //         if (window.confirm("Do you want to book this appointment?")) {
-  //           query.update({
-  //             status: "booked",
-  //             patientID: currentUser.uid,
-  //             title: "booked Appointment",
-  //           });
-  //           alert("Appointment Booked"); // done
-  //         }
-  //       }
-  //       if (doc.data().status === "booked") {
-  //         if (window.confirm("Do you want to cancel this appointment?")) {
-  //           query.update({
-  //             status: "open",
-  //             patientID: "N/A",
-  //             title: "Open Appointment",
-  //           });
-  //           alert("Appointment Cancelled"); // done
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
+  const handleClickOpen = (x) => {
+    setOpen(true);
+    console.log(x);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  function handleQuery(info) {
+    var query = db.collection("Appointment").doc(info.event.id);
+    query.get().then(function (doc) {
+      if (doc.exists) {
+        if (doc.data().status === "open") {
+          if (window.confirm("Do you want to book this appointment?")) {
+            query.update({
+              status: "booked",
+              patientID: currentUser.uid,
+              title: "booked Appointment",
+            });
+            alert("Appointment Booked"); // done
+          }
+        }
+        if (doc.data().status === "booked") {
+          if (window.confirm("Do you want to cancel this appointment?")) {
+            query.update({
+              status: "open",
+              patientID: "N/A",
+              title: "Open Appointment",
+            });
+            alert("Appointment Cancelled"); // done
+          }
+        }
+      }
+    });
+  }
 
   /**
    * Retrieves all events related to the doctos
@@ -120,11 +136,7 @@ export default () => {
 
   useEffect(() => {
     getEvents(); // Change event state and mount
-  });
-
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  }, []);
 
   // Render view
   return (
@@ -139,24 +151,34 @@ export default () => {
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         handleWindowResize={true}
         events={events}
-        themeSyste="bootstrap"
+        themeSystem="bootstrap"
         displayEventEnd={true}
-        eventClick={handleShow}
+        eventClick={handleClickOpen}
       />
-      <Modal show={show}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Use Google's location service?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Let Google help apps determine location. This means sending
+            anonymous location data to Google, even when no apps are running.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Disagree
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Agree
           </Button>
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
