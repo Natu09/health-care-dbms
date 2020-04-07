@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 
 import AdminNavbar from "components/Navbars/AdminNavbar"; // Change later
 import Sidebar from "components/Sidebar/Sidebar";
-import docCalendar from "../views/docCalendar";
 
 import routes from "../routes/routesDoc";
 import PrivateRoute from "../PrivateRoute";
@@ -28,10 +27,11 @@ class Doctor extends Component {
   getRoutes = routes => {
     return routes.map((prop, key) => {
       return (
-        <Route
-          path={prop.layout + prop.path}
-          render={props => <prop.component {...props} />}
-          key={key}
+        <PrivateRoute
+          exact
+          path={prop.path}
+          component={prop.component}
+          //key={key}
         />
       );
     });
@@ -84,8 +84,8 @@ class Doctor extends Component {
             brandText={"Hello Dr. " + this.state.lname}
           />
           <Switch>
-            <PrivateRoute exact path="/doctor" component={docCalendar} />
-            <PrivateRoute exact path="/doc" component={docCalendar} />
+            <Redirect from="/doctor" to="/editApts" />
+            {this.getRoutes(routes)}
           </Switch>
         </div>
       </div>

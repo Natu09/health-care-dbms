@@ -7,19 +7,20 @@ import Doctor from "layouts/Doctor.jsx";
 import Nurse from "layouts/Nurse.jsx";
 
 const Login = ({ history }) => {
+  const { currentUser } = useContext(AuthContext);
   const handleLogin = useCallback(
-    async event => {
+    async (event) => {
       event.preventDefault();
       const { email, password } = event.target.elements;
       try {
         await app
           .auth()
           .signInWithEmailAndPassword(email.value, password.value)
-          .then(cred => {
+          .then((cred) => {
             db.collection("Users")
               .doc(cred.user.uid)
               .get()
-              .then(function(doc) {
+              .then(function (doc) {
                 if (doc.data().role === "patient") {
                   history.push("/patient");
                   return <Redirect to="/patient" component={Patient} />;
@@ -39,9 +40,7 @@ const Login = ({ history }) => {
     [history]
   );
 
-  const { currentUser } = useContext(AuthContext);
-
-  console.log(currentUser);
+  console.log(currentUser.uid);
   // if (db.collection("Users").doc(user.uid)) {
 
   // }
