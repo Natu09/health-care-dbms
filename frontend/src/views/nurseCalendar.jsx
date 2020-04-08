@@ -12,7 +12,7 @@ import "@fullcalendar/list/main.css";
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-export default function DocCalendar(props) {
+export default function NurseCalendar(props) {
   const { currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
 
@@ -29,14 +29,31 @@ export default function DocCalendar(props) {
     displayEventEnd: true,
   };
 
+  function getFields() {
+    var query = db.collection("Users").doc(currentUser.uid);
+
+    const doctor = ""
+    query.get().then(function (user) {
+      if (user.exists) {
+        console.log("userdata:", user.data());
+      /// return
+      // doctor = ....
+      }
+    })
+    // return doctor
+  }
+
+
   /**
    * Retrieves all events related to the doctos
    */
   function getEvents() {
     const docApt = [];
 
+    const associatedDoctor = ""//getFields()
+    // console.log(getFields());
     db.collection("Appointment")
-      .where("doctorID", "==", currentUser.uid)
+      .where("doctorID", "==", associatedDoctor)
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach((doc) => {
@@ -58,7 +75,14 @@ export default function DocCalendar(props) {
           event.start = start;
           event.end = end;
 
-          // Set apt colour here
+          
+          // Set the event colour depending on its status
+          if (doc.data().status === "booked") {
+            event.color = "#0000ff";         // Blue
+          } else if (doc.data().status === "pending") {
+            event.color = "#ffe642";        // Yellow
+          }
+
 
           docApt.push(event);
         });
