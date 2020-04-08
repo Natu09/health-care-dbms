@@ -1,10 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-// import Popup from "react-popup";
-
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -12,6 +6,13 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+
+import { makeStyles } from "@material-ui/core/styles";
+
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
 import "@fullcalendar/core/main.css";
 import "@fullcalendar/daygrid/main.css";
@@ -25,43 +26,54 @@ export default () => {
   const { currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [temp, setTemp] = useState({});
 
-  const handleClickOpen = (x) => {
+  const handleClickOpen = (info) => {
     setOpen(true);
-    console.log(x);
+    document.getElementById("alert-dialog-title").innerHTML =
+      ' <DialogTitle id="alert-dialog-title">' +
+      info.event.title +
+      "</DialogTitle>";
+
+    setTemp(info.event);
+  };
+
+  const handleBook = () => {
+    setOpen(false);
+    let query = db.collection("Appointment").doc(temp.id);
+    console.log(query);
+    query.get().then(function (doc) {
+      if (doc.exists) {
+        if (doc.data().status === "open") {
+          query.update({
+            status: "pending",
+            patientID: currentUser.uid,
+            title: "Booked Appointment",
+          });
+        }
+      }
+    });
+    setTemp({});
   };
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  function handleQuery(info) {
-    var query = db.collection("Appointment").doc(info.event.id);
+    let query = db.collection("Appointment").doc(temp.id);
+    console.log(query);
+    console.log(temp);
     query.get().then(function (doc) {
       if (doc.exists) {
-        if (doc.data().status === "open") {
-          if (window.confirm("Do you want to book this appointment?")) {
-            query.update({
-              status: "booked",
-              patientID: currentUser.uid,
-              title: "booked Appointment",
-            });
-            alert("Appointment Booked"); // done
-          }
-        }
-        if (doc.data().status === "booked") {
-          if (window.confirm("Do you want to cancel this appointment?")) {
-            query.update({
-              status: "open",
-              patientID: "N/A",
-              title: "Open Appointment",
-            });
-            alert("Appointment Cancelled"); // done
-          }
+        if (doc.data().status === "booked" || doc.data().status === "booked") {
+          query.update({
+            status: "open",
+            patientID: "N/A",
+            title: "Open Appointment",
+          });
         }
       }
     });
-  }
+    setTemp({});
+  };
 
   /**
    * Retrieves all events related to the doctos
@@ -92,11 +104,21 @@ export default () => {
         end.setUTCSeconds(epochEnd);
 
         const event = doc.data();
+        let doctorName = doc.data().docName;
         event.start = start;
         event.end = end;
         event.id = doc.id;
+        event.docName = "Dr. " + doctorName;
+        event.title = doc.data().title;
 
         // Set apt colour here
+        if (doc.data().status === "pending") {
+          event.color = "orange ";
+        } else if (doc.data().status === "booked") {
+          event.color = "green";
+        } else {
+          event.color = "blue";
+        }
 
         docApt.push(event);
       });
@@ -120,11 +142,22 @@ export default () => {
           end.setUTCSeconds(epochEnd);
 
           const event = doc.data();
+          let doctorName = doc.data().docName;
           event.start = start;
           event.end = end;
           event.id = doc.id;
+          event.docName = "Dr. " + doctorName;
+          event.title = doc.data().title;
 
+          console.log(doc.data().status);
           // Set apt colour here
+          if (doc.data().status === "pending") {
+            event.color = "orange ";
+          } else if (doc.data().status === "booked") {
+            event.color = "green";
+          } else {
+            event.color = "blue";
+          }
 
           docApt.push(event);
         });
@@ -141,6 +174,14 @@ export default () => {
   // Render view
   return (
     <>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      />
       <FullCalendar
         defaultView="dayGridMonth"
         header={{
@@ -161,21 +202,18 @@ export default () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title"> Modal Title </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
+            Appointment Content goes here
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Disagree
+          <Button variant="outlined" onClick={handleClose} color="secondary">
+            Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            Agree
+          <Button variant="outlined" onClick={handleBook} color="primary">
+            Book
           </Button>
         </DialogActions>
       </Dialog>
