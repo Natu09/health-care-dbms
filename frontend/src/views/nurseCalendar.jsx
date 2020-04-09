@@ -36,16 +36,13 @@ export default function NurseCalendar(props) {
 
     calEvent.get().then(function (doc) {
       if (doc.exists) {
-        if (doc.data().status === "open") {
-          if (window.confirm("Do you want to book this appointment?")) {
-            
-            calEvent.update({   title: "newTitle"       });
-            // query.update({
-            //   status: "booked",
-            //   patientID: currentUser.uid,
-            //   title: "booked Appointment",
-            // });
-            alert("Appointment Booked"); // done
+        if (doc.data().status === "pending") {
+          if (window.confirm("Do you want to confirm this appointment?")) {
+             calEvent.update({
+              status: "booked",
+              title: "Confirmed Appointment",
+            });
+            alert("Appointment Confirmed"); // done
           }
         }
       }
@@ -85,8 +82,14 @@ export default function NurseCalendar(props) {
               const event = doc.data();
               event.start = start;
               event.end = end;
+              event.id = doc.id;
 
-              // Set apt colour here
+              // Set the event colour depending on its status
+              if (doc.data().status === "booked") {
+                  event.color = "#0000ff";         // Blue
+              } else if (doc.data().status === "pending") {
+                  event.color = "#ffa812";        // Yellow
+              }
 
               docApt.push(event);
             });
