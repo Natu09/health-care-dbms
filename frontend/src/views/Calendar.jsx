@@ -68,7 +68,6 @@ export default function DocCalendar(props) {
   function getEvents() {
     const docApt = [];
     // console.log(currentUser.uid)
-
     var query1 = db.collection("Appointment").where("status", "==", "open");
     var query2 = db
       .collection("Appointment")

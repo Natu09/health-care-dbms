@@ -5,30 +5,30 @@ import AdminNavbar from "components/Navbars/AdminNavbar"; // Change later
 
 import Sidebar from "components/Sidebar/Sidebar";
 
-import routes from "../routes/routes";
+import routes from "../routes/routesNurse";
 
 import PrivateRoute from "../PrivateRoute";
 
-import nurseCalendar from "views/Calendar.jsx";
+import nurseCalendar from "views/nurseCalendar.jsx";
 
-class Doctor extends Component {
+class Nurse extends Component {
   constructor(props) {
     super(props);
     console.log(props);
     console.log(this.props);
     this.state = {
       color: "red",
-      hasImage: true
+      hasImage: true,
     };
   }
 
-  getRoutes = routes => {
+  getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/doctor") {
+      if (prop.layout === "/nurse") {
         return (
           <Route
             path={prop.layout + prop.path}
-            render={props => <prop.component {...props} />}
+            render={(props) => <prop.component {...props} />}
             key={key}
           />
         );
@@ -38,7 +38,7 @@ class Doctor extends Component {
     });
   };
 
-  getBrandText = path => {
+  getBrandText = (path) => {
     for (let i = 0; i < routes.length; i++) {
       if (
         this.props.location.pathname.indexOf(
@@ -91,4 +91,4 @@ class Doctor extends Component {
   }
 }
 
-export default Doctor;
+export default Nurse;
