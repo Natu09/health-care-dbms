@@ -28,6 +28,7 @@ const App = () => {
           {/* ALL THE PRIVATE ROUTES FOR A PATIENT */}
           <PrivateRoute exact path="/patient" component={Admin} />
           <PrivateRoute exact path="/Calendar" component={Admin} />
+          <PrivateRoute exact path="/Reference" component={Admin} />
           {/* ALL THE PRIVATE ROUTES FOR A DOCTOR */}
           <PrivateRoute exact path="/doctor" component={Doctor} />
           <PrivateRoute exact path="/docCalendar" component={Doctor} />

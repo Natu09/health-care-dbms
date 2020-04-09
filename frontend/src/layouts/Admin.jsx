@@ -13,6 +13,7 @@ import { AuthContext } from "../Auth";
 
 import UserProfile from "views/UserProfile.jsx";
 import Calendar from "views/Calendar.jsx";
+import Reference from "views/Reference.jsx";
 
 class Admin extends Component {
   static contextType = AuthContext;
@@ -106,6 +107,7 @@ class Admin extends Component {
           <Switch>
             <PrivateRoute exact path="/patient" component={UserProfile} />
             <PrivateRoute exact path="/Calendar" component={Calendar} />
+            <PrivateRoute exact path="/Reference" component={Reference} />
           </Switch>
           {/* <Switch>{component={this.getRoutes(routes)}}</Switch> */}
         </div>

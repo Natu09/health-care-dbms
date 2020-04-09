@@ -6,8 +6,10 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -31,7 +33,9 @@ export default () => {
   const handleClickOpen = (info) => {
     setOpen(true);
     document.getElementById("modal-title").innerHTML =
-      ' <DialogTitle id="modal-title">' + info.event.title + "</DialogTitle>";
+      ' <DialogTitle id="modal-title"> <h3>' +
+      info.event.title +
+      "</ h3> </DialogTitle>";
 
     document.getElementById("doctor-name").innerHTML =
       ' <DialogContentText  id="doctor-name">' +
@@ -66,14 +70,14 @@ export default () => {
             patientID: currentUser.uid,
             title: "Pending Appointment",
           });
-          // temp.color = "orange";
+          temp.color = "orange";
         }
       }
     });
     setTemp({});
   };
 
-  const handleClose = () => {
+  const handleCancel = () => {
     setOpen(false);
     let query = db.collection("Appointment").doc(temp.id);
     query.get().then(function (doc) {
@@ -84,10 +88,16 @@ export default () => {
             patientID: "N/A",
             title: "Open Appointment",
           });
-          // temp.color = "green";
+          temp.color = "green";
         }
       }
     });
+    console.log(temp);
+    setTemp({});
+  };
+
+  const handleClose = () => {
+    setOpen(false);
     setTemp({});
   };
 
@@ -203,8 +213,10 @@ export default () => {
         displayEventEnd={true}
         eventClick={handleClickOpen}
       />
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle id="modal-title"> Modal Title </DialogTitle>
+      <Dialog open={open} onClick={handleClose}>
+        <DialogTitle disableTypography id="modal-title">
+          <h3> Modal Title </h3>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="doctor-name">
             Appointment Content goes here
@@ -217,7 +229,7 @@ export default () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={handleClose} color="secondary">
+          <Button variant="outlined" onClick={handleCancel} color="secondary">
             Cancel
           </Button>
           <Button variant="outlined" onClick={handleBook} color="primary">
