@@ -12,7 +12,7 @@ import "@fullcalendar/list/main.css";
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-export default function DocCalendar(props) {
+export default function NurseCalendar(props) {
   const { currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
 
@@ -28,6 +28,8 @@ export default function DocCalendar(props) {
     eventColor: "#378006", // Greenish
     displayEventEnd: true,
   };
+
+
 
 
   /**
@@ -50,6 +52,7 @@ export default function DocCalendar(props) {
               // Seting the Unix time
               const epochStart = doc.data().start.seconds;
               const epochEnd = doc.data().end.seconds;
+
 
               // Initilizing new Date objets
               let start = new Date(0);
