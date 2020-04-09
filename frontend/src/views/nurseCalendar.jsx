@@ -27,10 +27,30 @@ export default function NurseCalendar(props) {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     eventColor: "#378006", // Greenish
     displayEventEnd: true,
+    eventClick: handleEventClick,
   };
 
 
+  function handleEventClick(info) {
+    var calEvent = db.collection("Appointment").doc(info.event.id);
 
+    calEvent.get().then(function (doc) {
+      if (doc.exists) {
+        if (doc.data().status === "open") {
+          if (window.confirm("Do you want to book this appointment?")) {
+            
+            calEvent.update({   title: "newTitle"       });
+            // query.update({
+            //   status: "booked",
+            //   patientID: currentUser.uid,
+            //   title: "booked Appointment",
+            // });
+            alert("Appointment Booked"); // done
+          }
+        }
+      }
+    });
+  }
 
   /**
    * Retrieves all events related to the doctos
