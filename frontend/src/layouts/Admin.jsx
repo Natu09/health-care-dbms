@@ -8,16 +8,22 @@ import Sidebar from "components/Sidebar/Sidebar";
 import routes from "../routes/routes";
 
 import PrivateRoute from "../PrivateRoute";
+import { db } from "../firebase";
+import { AuthContext } from "../Auth";
 
 import UserProfile from "views/UserProfile.jsx";
 import Calendar from "views/Calendar.jsx";
 
 class Admin extends Component {
+  static contextType = AuthContext;
+
   constructor(props) {
     super(props);
     this.state = {
       color: "red",
       hasImage: true,
+      fname: "",
+      lname: "",
     };
   }
 
@@ -32,6 +38,7 @@ class Admin extends Component {
       }
     });
   };
+
   getBrandText = (path) => {
     for (let i = 0; i < routes.length; i++) {
       if (
@@ -44,6 +51,7 @@ class Admin extends Component {
     }
     return "Patient";
   };
+
   componentDidUpdate(e) {
     if (
       window.innerWidth < 993 &&
@@ -58,6 +66,26 @@ class Admin extends Component {
       this.refs.mainPanel.scrollTop = 0;
     }
   }
+
+  componentDidMount() {
+    const cont = this.context;
+
+    // Get the user lastname and set the sate of user lastname
+    try {
+      db.collection("Users")
+        .doc(cont.currentUser.uid)
+        .get()
+        .then((doc) => {
+          this.setState({
+            fname: doc.data().fname,
+            lname: doc.data().lname,
+          });
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div className="wrapper">
@@ -71,7 +99,9 @@ class Admin extends Component {
         <div id="main-panel" className="main-panel" ref="mainPanel">
           <AdminNavbar
             {...this.props}
-            brandText={this.getBrandText(this.props.location.pathname)}
+            brandText={
+              "Hello " + this.state.fname + " " + this.state.lname + " !"
+            }
           />
           <Switch>
             <PrivateRoute exact path="/patient" component={UserProfile} />

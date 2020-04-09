@@ -30,26 +30,43 @@ export default () => {
 
   const handleClickOpen = (info) => {
     setOpen(true);
-    document.getElementById("alert-dialog-title").innerHTML =
-      ' <DialogTitle id="alert-dialog-title">' +
-      info.event.title +
-      "</DialogTitle>";
+    document.getElementById("modal-title").innerHTML =
+      ' <DialogTitle id="modal-title">' + info.event.title + "</DialogTitle>";
+
+    document.getElementById("doctor-name").innerHTML =
+      ' <DialogContentText  id="doctor-name">' +
+      "Doctor: " +
+      info.event.extendedProps.docName +
+      "</DialogContentText>";
+
+    document.getElementById("start-time").innerHTML =
+      ' <DialogContentText  id="start-time">' +
+      "Start Time: " +
+      info.event.start +
+      "</DialogContentText>";
+
+    document.getElementById("end-time").innerHTML =
+      ' <DialogContentText  id="end-time">' +
+      "End Time: " +
+      info.event.end +
+      "</DialogContentText>";
 
     setTemp(info.event);
   };
 
   const handleBook = () => {
     setOpen(false);
+    console.log(temp);
     let query = db.collection("Appointment").doc(temp.id);
-    console.log(query);
     query.get().then(function (doc) {
       if (doc.exists) {
         if (doc.data().status === "open") {
           query.update({
             status: "pending",
             patientID: currentUser.uid,
-            title: "Booked Appointment",
+            title: "Pending Appointment",
           });
+          // temp.color = "orange";
         }
       }
     });
@@ -59,16 +76,15 @@ export default () => {
   const handleClose = () => {
     setOpen(false);
     let query = db.collection("Appointment").doc(temp.id);
-    console.log(query);
-    console.log(temp);
     query.get().then(function (doc) {
       if (doc.exists) {
-        if (doc.data().status === "booked" || doc.data().status === "booked") {
+        if (doc.data().status === "booked" || doc.data().status === "pending") {
           query.update({
             status: "open",
             patientID: "N/A",
             title: "Open Appointment",
           });
+          // temp.color = "green";
         }
       }
     });
@@ -115,9 +131,9 @@ export default () => {
         if (doc.data().status === "pending") {
           event.color = "orange ";
         } else if (doc.data().status === "booked") {
-          event.color = "green";
-        } else {
           event.color = "blue";
+        } else {
+          event.color = "green";
         }
 
         docApt.push(event);
@@ -149,14 +165,13 @@ export default () => {
           event.docName = "Dr. " + doctorName;
           event.title = doc.data().title;
 
-          console.log(doc.data().status);
           // Set apt colour here
           if (doc.data().status === "pending") {
             event.color = "orange ";
           } else if (doc.data().status === "booked") {
-            event.color = "green";
-          } else {
             event.color = "blue";
+          } else {
+            event.color = "green";
           }
 
           docApt.push(event);
@@ -174,14 +189,6 @@ export default () => {
   // Render view
   return (
     <>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-      />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      />
       <FullCalendar
         defaultView="dayGridMonth"
         header={{
@@ -196,15 +203,16 @@ export default () => {
         displayEventEnd={true}
         eventClick={handleClickOpen}
       />
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title"> Modal Title </DialogTitle>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle id="modal-title"> Modal Title </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="doctor-name">
+            Appointment Content goes here
+          </DialogContentText>
+          <DialogContentText id="start-time">
+            Appointment Content goes here
+          </DialogContentText>
+          <DialogContentText id="end-time">
             Appointment Content goes here
           </DialogContentText>
         </DialogContent>
