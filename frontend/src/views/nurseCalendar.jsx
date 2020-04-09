@@ -29,43 +29,51 @@ export default function DocCalendar(props) {
     displayEventEnd: true,
   };
 
+
   /**
    * Retrieves all events related to the doctos
    */
   function getEvents() {
     const docApt = [];
+    //console.log(currentUser.uid);
 
-    db.collection("Appointment")
-      .where("doctorID", "==", currentUser.uid)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach((doc) => {
-          // Reformating time format for full calendar event
+    var queryNurse = db.collection("Users").where("uid", "==", currentUser.uid);
+    queryNurse.get().then(function (doc){
+      doc.forEach((d)=>{
+          let docID = d.data().doctorID;
 
-          // Seting the Unix time
-          const epochStart = doc.data().start.seconds;
-          const epochEnd = doc.data().end.seconds;
+          var queryDoctor = db.collection("Appointment").where("doctorID", "==", docID);
+          queryDoctor.get().then(function (querySnapshot) {
+            querySnapshot.forEach((doc) => {
+              // Reformating time format for full calendar event
 
-          // Initilizing new Date objets
-          let start = new Date(0);
-          let end = new Date(0);
+              // Seting the Unix time
+              const epochStart = doc.data().start.seconds;
+              const epochEnd = doc.data().end.seconds;
 
-          // Set date object times to Unix time from event object
-          start.setUTCSeconds(epochStart);
-          end.setUTCSeconds(epochEnd);
+              // Initilizing new Date objets
+              let start = new Date(0);
+              let end = new Date(0);
 
-          const event = doc.data();
-          event.start = start;
-          event.end = end;
+              // Set date object times to Unix time from event object
+              start.setUTCSeconds(epochStart);
+              end.setUTCSeconds(epochEnd);
 
-          // Set apt colour here
+              const event = doc.data();
+              event.start = start;
+              event.end = end;
 
-          docApt.push(event);
-        });
+              // Set apt colour here
+
+              docApt.push(event);
+            });
+          })
+          .then(() => {
+            setEvents(docApt);
+          });
+
       })
-      .then(() => {
-        setEvents(docApt);
-      });
+    });
   }
 
   useEffect(() => {
