@@ -6,10 +6,10 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
+// import IconButton from "@material-ui/core/IconButton";
+// import CloseIcon from "@material-ui/icons/Close";
 
-import { withStyles } from "@material-ui/core/styles";
+// import { withStyles } from "@material-ui/core/styles";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -39,20 +39,26 @@ export default () => {
 
     document.getElementById("doctor-name").innerHTML =
       ' <DialogContentText  id="doctor-name">' +
+      "<h5>" +
       "Doctor: " +
       info.event.extendedProps.docName +
+      "<h5>" +
       "</DialogContentText>";
 
     document.getElementById("start-time").innerHTML =
       ' <DialogContentText  id="start-time">' +
+      "<h5>" +
       "Start Time: " +
       info.event.start +
+      "<h5>" +
       "</DialogContentText>";
 
     document.getElementById("end-time").innerHTML =
       ' <DialogContentText  id="end-time">' +
+      "<h5>" +
       "End Time: " +
       info.event.end +
+      "<h5>" +
       "</DialogContentText>";
 
     setTemp(info.event);
@@ -60,39 +66,50 @@ export default () => {
 
   const handleBook = () => {
     setOpen(false);
-    console.log(temp);
     let query = db.collection("Appointment").doc(temp.id);
-    query.get().then(function (doc) {
-      if (doc.exists) {
-        if (doc.data().status === "open") {
-          query.update({
-            status: "pending",
-            patientID: currentUser.uid,
-            title: "Pending Appointment",
-          });
-          temp.color = "orange";
+    query
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          if (doc.data().status === "open") {
+            query.update({
+              status: "pending",
+              patientID: currentUser.uid,
+              title: "Pending Appointment",
+            });
+          }
         }
-      }
-    });
+      })
+      .then((_) => {
+        setEvents([]);
+        getEvents();
+      });
     setTemp({});
   };
 
   const handleCancel = () => {
     setOpen(false);
     let query = db.collection("Appointment").doc(temp.id);
-    query.get().then(function (doc) {
-      if (doc.exists) {
-        if (doc.data().status === "booked" || doc.data().status === "pending") {
-          query.update({
-            status: "open",
-            patientID: "N/A",
-            title: "Open Appointment",
-          });
-          temp.color = "green";
+    query
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          if (
+            doc.data().status === "booked" ||
+            doc.data().status === "pending"
+          ) {
+            query.update({
+              status: "open",
+              patientID: "N/A",
+              title: "Open Appointment",
+            });
+          }
         }
-      }
-    });
-    console.log(temp);
+      })
+      .then((_) => {
+        setEvents([]);
+        getEvents();
+      });
     setTemp({});
   };
 
@@ -199,20 +216,25 @@ export default () => {
   // Render view
   return (
     <>
-      <FullCalendar
-        defaultView="dayGridMonth"
-        header={{
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-        }}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        handleWindowResize={true}
-        events={events}
-        themeSystem="bootstrap"
-        displayEventEnd={true}
-        eventClick={handleClickOpen}
-      />
+      <div>
+        <FullCalendar
+          defaultView="dayGridMonth"
+          header={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+          }}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          handleWindowResize={true}
+          events={events}
+          editable={true}
+          themeSystem="bootstrap"
+          allDay={true}
+          aspectRatio={2}
+          displayEventEnd={true}
+          eventClick={handleClickOpen}
+        />
+      </div>
       <Dialog open={open} onClick={handleClose}>
         <DialogTitle disableTypography id="modal-title">
           <h3> Modal Title </h3>

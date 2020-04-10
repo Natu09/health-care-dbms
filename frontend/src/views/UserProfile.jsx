@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  Grid,
-  Row,
-  Col,
-  FormGroup,
-  ControlLabel,
-  FormControl,
-} from "react-bootstrap";
+import { Grid, Row, Col } from "react-bootstrap";
 
 import { UserCard } from "components/UserCard/UserCard.jsx";
 
@@ -14,7 +7,6 @@ import avatar from "assets/img/faces/face-3.jpg";
 
 import { Card } from "components/Card/Card.jsx";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
-import Button from "components/CustomButton/CustomButton.jsx";
 
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
