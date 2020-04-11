@@ -40,13 +40,13 @@ const Login = ({ history }) => {
     [history]
   );
 
-  console.log(currentUser.uid);
+  // console.log(currentUser.uid);
   // if (db.collection("Users").doc(user.uid)) {
 
   // }
-  // if (currentUser) {
-  //   return <Redirect to="/" />;
-  // }
+  if (currentUser) {
+    return <Redirect to="/doctor" />;
+  }
 
   return (
     <div>
