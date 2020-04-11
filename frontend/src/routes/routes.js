@@ -1,5 +1,6 @@
 import UserProfile from "views/UserProfile.jsx";
 import Calendar from "views/Calendar.jsx";
+import Reference from "views/Reference.jsx";
 
 const dashboardRoutes = [
   {
@@ -14,6 +15,13 @@ const dashboardRoutes = [
     name: "Calendar",
     icon: "pe-7s-date",
     component: Calendar,
+    layout: "/admin",
+  },
+  {
+    path: "/reference",
+    name: "Reference",
+    icon: "pe-7s-note2",
+    component: Reference,
     layout: "/admin",
   },
 ];

@@ -30,7 +30,6 @@ export default function NurseCalendar(props) {
     eventClick: handleEventClick,
   };
 
-
   function handleEventClick(info) {
     var calEvent = db.collection("Appointment").doc(info.event.id);
 
@@ -38,7 +37,7 @@ export default function NurseCalendar(props) {
       if (doc.exists) {
         if (doc.data().status === "pending") {
           if (window.confirm("Do you want to confirm this appointment?")) {
-             calEvent.update({
+            calEvent.update({
               status: "booked",
               title: "Confirmed Appointment",
             });
@@ -52,59 +51,61 @@ export default function NurseCalendar(props) {
   /**
    * Retrieves all events related to the doctos
    */
-  function getEvents() {
-    const docApt = [];
-    //console.log(currentUser.uid);
+  // function getEvents() {
+  //   const docApt = [];
+  //   //console.log(currentUser.uid);
 
-    var queryNurse = db.collection("Users").where("uid", "==", currentUser.uid);
-    queryNurse.get().then(function (doc){
-      doc.forEach((d)=>{
-          let docID = d.data().doctorID;
+  //   var queryNurse = db.collection("Users").where("uid", "==", currentUser.uid);
+  //   queryNurse.get().then(function (doc) {
+  //     doc.forEach((d) => {
+  //       let docID = d.data().doctorID;
 
-          var queryDoctor = db.collection("Appointment").where("doctorID", "==", docID);
-          queryDoctor.get().then(function (querySnapshot) {
-            querySnapshot.forEach((doc) => {
-              // Reformating time format for full calendar event
+  //       var queryDoctor = db
+  //         .collection("Appointment")
+  //         .where("doctorID", "==", docID);
+  //       queryDoctor
+  //         .get()
+  //         .then(function (querySnapshot) {
+  //           querySnapshot.forEach((doc) => {
+  //             // Reformating time format for full calendar event
 
-              // Seting the Unix time
-              const epochStart = doc.data().start.seconds;
-              const epochEnd = doc.data().end.seconds;
+  //             // Seting the Unix time
+  //             const epochStart = doc.data().start.seconds;
+  //             const epochEnd = doc.data().end.seconds;
 
+  //             // Initilizing new Date objets
+  //             let start = new Date(0);
+  //             let end = new Date(0);
 
-              // Initilizing new Date objets
-              let start = new Date(0);
-              let end = new Date(0);
+  //             // Set date object times to Unix time from event object
+  //             start.setUTCSeconds(epochStart);
+  //             end.setUTCSeconds(epochEnd);
 
-              // Set date object times to Unix time from event object
-              start.setUTCSeconds(epochStart);
-              end.setUTCSeconds(epochEnd);
+  //             const event = doc.data();
+  //             event.start = start;
+  //             event.end = end;
+  //             event.id = doc.id;
 
-              const event = doc.data();
-              event.start = start;
-              event.end = end;
-              event.id = doc.id;
+  //             // Set the event colour depending on its status
+  //             if (doc.data().status === "booked") {
+  //               event.color = "blue"; // Blue
+  //             } else if (doc.data().status === "pending") {
+  //               event.color = "orange"; // Yellow
+  //             }
 
-              // Set the event colour depending on its status
-              if (doc.data().status === "booked") {
-                  event.color = "#0000ff";         // Blue
-              } else if (doc.data().status === "pending") {
-                  event.color = "#ffa812";        // Yellow
-              }
+  //             docApt.push(event);
+  //           });
+  //         })
+  //         .then(() => {
+  //           setEvents(docApt);
+  //         });
+  //     });
+  //   });
+  // }
 
-              docApt.push(event);
-            });
-          })
-          .then(() => {
-            setEvents(docApt);
-          });
-
-      })
-    });
-  }
-
-  useEffect(() => {
-    getEvents(); // Change event state and mount
-  });
+  // useEffect(() => {
+  //   getEvents(); // Change event state and mount
+  // }, []);
 
   // Render view
   return (

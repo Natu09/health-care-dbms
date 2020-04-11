@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
-// import Popup from "react-popup";
+
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+// import IconButton from "@material-ui/core/IconButton";
+// import CloseIcon from "@material-ui/icons/Close";
+
+// import { withStyles } from "@material-ui/core/styles";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -14,53 +24,99 @@ import "@fullcalendar/list/main.css";
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-export default function DocCalendar(props) {
+export default () => {
   const { currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [temp, setTemp] = useState({});
 
-  /// Options for the calendar component
-  const options = {
-    defaultView: "dayGridMonth",
-    header: {
-      left: "prev,next today",
-      center: "title",
-      right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-    },
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    eventColor: "#378006", // Greenish
-    displayEventEnd: true,
-    eventClick: handleEventClick,
+  const handleClickOpen = (info) => {
+    setOpen(true);
+    document.getElementById("modal-title").innerHTML =
+      ' <DialogTitle id="modal-title"> <h3>' +
+      info.event.title +
+      "</ h3> </DialogTitle>";
+
+    document.getElementById("doctor-name").innerHTML =
+      ' <DialogContentText  id="doctor-name">' +
+      "<h5>" +
+      "Doctor: " +
+      info.event.extendedProps.docName +
+      "<h5>" +
+      "</DialogContentText>";
+
+    document.getElementById("start-time").innerHTML =
+      ' <DialogContentText  id="start-time">' +
+      "<h5>" +
+      "Start Time: " +
+      info.event.start +
+      "<h5>" +
+      "</DialogContentText>";
+
+    document.getElementById("end-time").innerHTML =
+      ' <DialogContentText  id="end-time">' +
+      "<h5>" +
+      "End Time: " +
+      info.event.end +
+      "<h5>" +
+      "</DialogContentText>";
+
+    setTemp(info.event);
   };
 
-  function handleEventClick(info) {
-    var query = db.collection("Appointment").doc(info.event.id);
-
-    query.get().then(function (doc) {
-      if (doc.exists) {
-        if (doc.data().status === "open") {
-          if (window.confirm("Do you want to book this appointment?")) {
+  const handleBook = () => {
+    setOpen(false);
+    let query = db.collection("Appointment").doc(temp.id);
+    query
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          if (doc.data().status === "open") {
             query.update({
-              status: "booked",
+              status: "pending",
               patientID: currentUser.uid,
-              title: "booked Appointment",
+              title: "Pending Appointment",
             });
-            alert("Appointment Booked"); // done
           }
         }
-        if (doc.data().status === "booked") {
-          if (window.confirm("Do you want to cancel this appointment?")) {
+      })
+      .then((_) => {
+        setEvents([]);
+        getEvents();
+      });
+    setTemp({});
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+    let query = db.collection("Appointment").doc(temp.id);
+    query
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          if (
+            doc.data().status === "booked" ||
+            doc.data().status === "pending"
+          ) {
             query.update({
               status: "open",
               patientID: "N/A",
               title: "Open Appointment",
             });
-
-            alert("Appointment Cancelled"); // done
           }
         }
-      }
-    });
-  }
+      })
+      .then((_) => {
+        setEvents([]);
+        getEvents();
+      });
+    setTemp({});
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setTemp({});
+  };
 
   /**
    * Retrieves all events related to the doctos
@@ -90,11 +146,21 @@ export default function DocCalendar(props) {
         end.setUTCSeconds(epochEnd);
 
         const event = doc.data();
+        let doctorName = doc.data().docName;
         event.start = start;
         event.end = end;
         event.id = doc.id;
+        event.docName = "Dr. " + doctorName;
+        event.title = doc.data().title;
 
         // Set apt colour here
+        if (doc.data().status === "pending") {
+          event.color = "orange ";
+        } else if (doc.data().status === "booked") {
+          event.color = "blue";
+        } else {
+          event.color = "green";
+        }
 
         docApt.push(event);
       });
@@ -118,11 +184,21 @@ export default function DocCalendar(props) {
           end.setUTCSeconds(epochEnd);
 
           const event = doc.data();
+          let doctorName = doc.data().docName;
           event.start = start;
           event.end = end;
           event.id = doc.id;
+          event.docName = "Dr. " + doctorName;
+          event.title = doc.data().title;
 
           // Set apt colour here
+          if (doc.data().status === "pending") {
+            event.color = "orange ";
+          } else if (doc.data().status === "booked") {
+            event.color = "blue";
+          } else {
+            event.color = "green";
+          }
 
           docApt.push(event);
         });
@@ -134,12 +210,54 @@ export default function DocCalendar(props) {
 
   useEffect(() => {
     getEvents(); // Change event state and mount
-  });
+  }, []);
 
   // Render view
   return (
-    <div className="calendar">
-      <FullCalendar {...options} events={events} />
-    </div>
+    <>
+      <div style={{ paddingTop: 20 }}>
+        <FullCalendar
+          defaultView="dayGridMonth"
+          header={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+          }}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          handleWindowResize={true}
+          events={events}
+          editable={true}
+          themeSystem="bootstrap"
+          allDay={true}
+          aspectRatio={2}
+          displayEventEnd={true}
+          eventClick={handleClickOpen}
+        />
+      </div>
+      <Dialog open={open} onClick={handleClose}>
+        <DialogTitle disableTypography id="modal-title">
+          <h3> Modal Title </h3>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="doctor-name">
+            Appointment Content goes here
+          </DialogContentText>
+          <DialogContentText id="start-time">
+            Appointment Content goes here
+          </DialogContentText>
+          <DialogContentText id="end-time">
+            Appointment Content goes here
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleCancel} color="secondary">
+            Cancel
+          </Button>
+          <Button variant="outlined" onClick={handleBook} color="primary">
+            Book
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
-}
+};
