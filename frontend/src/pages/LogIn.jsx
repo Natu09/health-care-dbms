@@ -6,11 +6,6 @@ import Patient from "layouts/Admin.jsx";
 import Doctor from "layouts/Doctor.jsx";
 import Nurse from "layouts/Nurse.jsx";
 
-const label = {
-  display: "inline-block",
-  width: "230px",
-  textAlign: "right",
-};
 const Login = ({ history }) => {
   const handleLogin = useCallback(
     async (event) => {
@@ -45,23 +40,28 @@ const Login = ({ history }) => {
   );
 
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser);
+  // console.log(currentUser);
 
-  // console.log(db.collection("Users").doc(user.uid));
+  // console.log(db.collection("Users").doc(currentUser.uid));
 
   // if the current users role is patient then redirect to patient
-  if (currentUser) {
-    return <Redirect to="/patient" />;
-  }
-  // else if current users role is a doctor then redirect them to the doctor layout
-  // else if current users role is a nurse then redirect them to the nurse layout
+  // if (currentUser) {
+  //   let query = db.collection("Users").where("uid", "==", currentUser.uid);
+
+  //   let role = query.get().then(function (doc) {
+  //     return doc.data().role;
+  //   });
+
+  //   console.log(role);
+  //   return <Redirect to={"/" + role} />;
+  // }
 
   return (
     <div>
-      <div class="col-md-6 col-md-offset-3">
-        <div class="card card-body text-dark">
+      <div className="col-md-6 col-md-offset-3">
+        <div className="card card-body text-dark">
           <h1
-            class="text-center mb-3"
+            className="text-center mb-3"
             style={{ fontWeight: "bold", color: "#000000" }}
           >
             AHS LOGIN
@@ -73,41 +73,41 @@ const Login = ({ history }) => {
               paddingRight: "20px",
             }}
           >
-            <div class="form-group">
-              <label for="email" style={{ color: "#000000" }}>
+            <div className="form-group">
+              <label htmlFor="email" style={{ color: "#000000" }}>
                 Email
               </label>
               <input
                 type="email"
                 id="email"
                 name="email"
-                class="form-control"
+                className="form-control"
                 placeholder="Enter Email"
                 required
               />
             </div>
-            <div class="form-group">
-              <label for="password" style={{ color: "#000000" }}>
+            <div className="form-group">
+              <label htmlFor="password" style={{ color: "#000000" }}>
                 Password
               </label>
               <input
                 type="password"
                 id="password"
                 name="password"
-                class="form-control"
+                className="form-control"
                 placeholder="Enter Password"
                 required
               />
             </div>
             <button
               type="submit"
-              class="btn btn-primary btn-block"
+              className="btn btn-primary btn-block"
               style={{ border: "2px solid green", color: "green" }}
             >
               Login
             </button>
           </form>
-          <p align="center">
+          <p align="center" style={{ padding: 20 }}>
             Are you a new user? <a href="signup">Create an account</a>
           </p>
         </div>

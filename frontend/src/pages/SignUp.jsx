@@ -22,6 +22,7 @@ const SignUp = ({ history }) => {
               role: "patient",
               fname: Fname.value,
               lname: Lname.value,
+              email: email.value,
             });
           });
         history.push("/patient");
@@ -107,7 +108,7 @@ const SignUp = ({ history }) => {
               Sign Up
             </button>
           </form>
-          <p align="center">
+          <p align="center" style={{ padding: 20 }}>
             Already have an account? <a href="/login">Login</a>
           </p>
         </div>

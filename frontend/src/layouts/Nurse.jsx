@@ -8,10 +8,14 @@ import Sidebar from "components/Sidebar/Sidebar";
 import routes from "../routes/routesNurse";
 
 import PrivateRoute from "../PrivateRoute";
+import { db } from "../firebase";
+import { AuthContext } from "../Auth";
 
 import nurseCalendar from "views/nurseCalendar.jsx";
 
 class Nurse extends Component {
+  static contextType = AuthContext;
+
   constructor(props) {
     super(props);
     console.log(props);
@@ -19,6 +23,8 @@ class Nurse extends Component {
     this.state = {
       color: "red",
       hasImage: true,
+      fname: "",
+      lname: "",
     };
   }
 
@@ -66,6 +72,25 @@ class Nurse extends Component {
     }
   }
 
+  componentDidMount() {
+    const cont = this.context;
+
+    // Get the user lastname and set the sate of user lastname
+    try {
+      db.collection("Users")
+        .doc(cont.currentUser.uid)
+        .get()
+        .then((doc) => {
+          this.setState({
+            fname: doc.data().fname,
+            lname: doc.data().lname,
+          });
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div className="wrapper">
@@ -79,11 +104,12 @@ class Nurse extends Component {
         <div id="main-panel" className="main-panel" ref="mainPanel">
           <AdminNavbar
             {...this.props}
-            brandText={this.getBrandText(this.props.location.pathname)}
+            brandText={
+              "Hello " + this.state.fname + " " + this.state.lname + " !"
+            }
           />
           <Switch>
             <PrivateRoute exact path="/nurse" component={nurseCalendar} />
-            <PrivateRoute exact path="/nurseCal" component={nurseCalendar} />
           </Switch>
         </div>
       </div>
