@@ -124,7 +124,6 @@ export default () => {
   function getEvents() {
     const docApt = [];
     // console.log(currentUser.uid)
-
     var query1 = db.collection("Appointment").where("status", "==", "open");
     var query2 = db
       .collection("Appointment")
@@ -216,7 +215,7 @@ export default () => {
   // Render view
   return (
     <>
-      <div>
+      <div style={{ paddingTop: 20 }}>
         <FullCalendar
           defaultView="dayGridMonth"
           header={{

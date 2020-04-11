@@ -49,7 +49,7 @@ class UserProfile extends Component {
 
   render() {
     return (
-      <div className="content">
+      <div className="content" style={{ paddingTop: 50 }}>
         <Grid fluid>
           <Row>
             <Col md={8}>
