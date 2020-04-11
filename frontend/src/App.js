@@ -27,13 +27,7 @@ const App = () => {
           <Route exact path="/signup" component={SignUpPage} />
           {/* ALL THE PRIVATE ROUTES FOR A PATIENT */}
           <PrivateRoute exact path="/patient" component={Admin} />
-          <PrivateRoute exact path="/user" component={Admin} />
-          <PrivateRoute exact path="/dashboard" component={Admin} />
           <PrivateRoute exact path="/Calendar" component={Admin} />
-          <PrivateRoute exact path="/Typography" component={Admin} />
-          <PrivateRoute exact path="/Icons" component={Admin} />
-          <PrivateRoute exact path="/Maps" component={Admin} />
-          <PrivateRoute exact path="/Notifications" component={Admin} />
           {/* ALL THE PRIVATE ROUTES FOR A DOCTOR */}
           <PrivateRoute exact path="/doctor" component={Doctor} />
           <PrivateRoute exact path="/docCalendar" component={Doctor} />

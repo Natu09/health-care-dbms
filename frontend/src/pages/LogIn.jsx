@@ -6,6 +6,11 @@ import Patient from "layouts/Admin.jsx";
 import Doctor from "layouts/Doctor.jsx";
 import Nurse from "layouts/Nurse.jsx";
 
+const label = {
+  display: "inline-block",
+  width: "230px",
+  textAlign: "right",
+};
 const Login = ({ history }) => {
   const { currentUser } = useContext(AuthContext);
   const handleLogin = useCallback(
@@ -40,28 +45,71 @@ const Login = ({ history }) => {
     [history]
   );
 
-  // console.log(currentUser.uid);
-  // if (db.collection("Users").doc(user.uid)) {
+  // console.log(db.collection("Users").doc(user.uid));
 
-  // }
+  // if the current users role is patient then redirect to patient
   if (currentUser) {
     return <Redirect to="/doctor" />;
   }
+  // else if current users role is a doctor then redirect them to the doctor layout
+  // else if current users role is a nurse then redirect them to the nurse layout
 
   return (
     <div>
-      <h1>Log in</h1>
-      <form onSubmit={handleLogin}>
-        <label>
-          Email
-          <input name="email" type="email" placeholder="Email" />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" placeholder="Password" />
-        </label>
-        <button type="submit">Log in</button>
-      </form>
+      <div class="col-md-6 col-md-offset-3">
+        <div class="card card-body text-dark">
+          <h1
+            class="text-center mb-3"
+            style={{ fontWeight: "bold", color: "#000000" }}
+          >
+            AHS LOGIN
+          </h1>
+          <form
+            onSubmit={handleLogin}
+            style={{
+              paddingLeft: "20px",
+              paddingRight: "20px",
+            }}
+          >
+            <div class="form-group">
+              <label for="email" style={{ color: "#000000" }}>
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="Enter Email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="password" style={{ color: "#000000" }}>
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Enter Password"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              style={{ border: "2px solid green", color: "green" }}
+            >
+              Login
+            </button>
+          </form>
+          <p align="center">
+            Are you a new user? <a href="signup">Create an account</a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
