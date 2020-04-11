@@ -45,28 +45,17 @@ const Login = ({ history }) => {
   // console.log(db.collection("Users").doc(currentUser.uid));
 
   // if the current users role is patient then redirect to patient
-  if (currentUser) {
-    let role = db
-      .collection("Users")
-      .where("uid", "==", currentUser.uid)
-      .get()
-      .then(function (doc) {
-        return doc.data().role;
-      });
+  // if (currentUser) {
+  //   let query = db.collection("Users").where("uid", "==", currentUser.uid);
 
-    // let role = db
-    //   .collection("Users")
-    //   .doc(currentUser.uid)
-    //   .get()
-    //   .then((user) => {
-    //     role = user.data().role;
-    //     return role;
-    //   });
-    console.log(role);
-    return <Redirect to={"/" + role} />;
-  }
-  // else if current users role is a doctor then redirect them to the doctor layout
-  // else if current users role is a nurse then redirect them to the nurse layout
+  //   let role = query.get().then(function (doc) {
+  //     return doc.data().role;
+  //   });
+
+  //   console.log(role);
+  //   return <Redirect to={"/" + role} />;
+  // }
+
   return (
     <div>
       <div className="col-md-6 col-md-offset-3">
@@ -118,7 +107,7 @@ const Login = ({ history }) => {
               Login
             </button>
           </form>
-          <p align="center">
+          <p align="center" style={{ padding: 20 }}>
             Are you a new user? <a href="signup">Create an account</a>
           </p>
         </div>
