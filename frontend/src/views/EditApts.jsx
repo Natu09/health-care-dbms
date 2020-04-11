@@ -14,7 +14,7 @@ import { Table } from "react-bootstrap";
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-const thArr = ["Date", "Start", "End", "Actions"];
+const thArr = ["ID", "Date", "Start", "End", "Actions"];
 
 export default class EditApts extends Component {
   static contextType = AuthContext;
@@ -67,7 +67,7 @@ export default class EditApts extends Component {
         .doc()
         .set({
           docName: this.state.doctorName,
-          doctorId: cont.currentUser.uid,
+          doctorID: cont.currentUser.uid,
           end: new Date(end_point * 1000),
           patientID: "",
           start: new Date(start_point * 1000),
@@ -78,17 +78,25 @@ export default class EditApts extends Component {
       start_point += 3600;
       end_point += 3600;
     }
-
-    console.log(end_ts);
   };
 
   deleteApt = (i) => {
     console.log(this.state.availableApts);
+    console.log(this.state.availableApts[i][0]);
+
+    db.collection("Appointment")
+      .doc(this.state.availableApts[i][0])
+      .delete()
+      .then(function () {
+        console.log("Document successfully deleted!");
+      })
+      .catch(function (error) {
+        console.error("Error removing document: ", error);
+      });
 
     this.setState((state) => ({
       availableApts: state.availableApts.filter((row, j) => j !== i),
     }));
-    console.log(i);
   };
 
   getAvailableApts() {
@@ -127,9 +135,12 @@ export default class EditApts extends Component {
             "/" +
             start.getFullYear();
 
-          const st = start.getHours() + ":" + start.getMinutes();
-          const ed = end.getHours() + ":" + end.getMinutes();
+          const st = start.getHours() + ":" + start.getMinutes() + "0";
+          const ed = end.getHours() + ":" + end.getMinutes() + "0";
 
+          const id = doc.id;
+
+          apt.push(id);
           apt.push(date);
           apt.push(st);
           apt.push(ed);
@@ -139,6 +150,7 @@ export default class EditApts extends Component {
       })
       .then(() => {
         this.setState({ availableApts: apts });
+        console.log(this.state.availableApts);
       });
   }
 

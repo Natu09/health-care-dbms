@@ -20,11 +20,11 @@ class Doctor extends Component {
     this.state = {
       color: "red",
       hasImage: true,
-      lname: ""
+      lname: "",
     };
   }
 
-  getRoutes = routes => {
+  getRoutes = (routes) => {
     return routes.map((prop, key) => {
       return (
         <PrivateRoute
@@ -60,7 +60,7 @@ class Doctor extends Component {
       db.collection("Users")
         .doc(cont.currentUser.uid)
         .get()
-        .then(doc => {
+        .then((doc) => {
           this.setState({ lname: doc.data().lname });
         });
     } catch (error) {
