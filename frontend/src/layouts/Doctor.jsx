@@ -27,18 +27,11 @@ class Doctor extends Component {
   getRoutes = (routes) => {
     return routes.map((prop, key) => {
       return (
-<<<<<<< HEAD
         <PrivateRoute
           exact
           path={prop.path}
           component={prop.component}
           //key={key}
-=======
-        <Route
-          path={prop.layout + prop.path}
-          render={(props) => <prop.component {...props} />}
-          key={key}
->>>>>>> master
         />
       );
     });

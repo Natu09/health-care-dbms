@@ -7,7 +7,6 @@ import Doctor from "layouts/Doctor.jsx";
 import Nurse from "layouts/Nurse.jsx";
 
 const Login = ({ history }) => {
-  const { currentUser } = useContext(AuthContext);
   const handleLogin = useCallback(
     async (event) => {
       event.preventDefault();
@@ -40,16 +39,6 @@ const Login = ({ history }) => {
     [history]
   );
 
-<<<<<<< HEAD
-  // console.log(db.collection("Users").doc(user.uid));
-
-  // if the current users role is patient then redirect to patient
-  if (currentUser) {
-    return <Redirect to="/doctor" />;
-  }
-  // else if current users role is a doctor then redirect them to the doctor layout
-  // else if current users role is a nurse then redirect them to the nurse layout
-=======
   const { currentUser } = useContext(AuthContext);
   // console.log(currentUser);
 
@@ -66,7 +55,6 @@ const Login = ({ history }) => {
   //   console.log(role);
   //   return <Redirect to={"/" + role} />;
   // }
->>>>>>> master
 
   return (
     <div>
