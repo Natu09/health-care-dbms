@@ -1,5 +1,4 @@
-import React, { Component, context } from "react";
-import { addDays } from "@fullcalendar/core";
+import React, { Component } from "react";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -15,10 +14,6 @@ import { Table } from "react-bootstrap";
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-const d = addDays(new Date(), 1);
-d.setHours(9);
-d.setMinutes(0);
-
 const thArr = ["Date", "Start", "End", "Actions"];
 
 export default class EditApts extends Component {
@@ -27,31 +22,74 @@ export default class EditApts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: d,
-      start: d,
-      end: d,
+      doctorName: "",
+      fname: "",
+      lname: "",
+      date: new Date(),
+      start: new Date(),
+      end: new Date(),
       availableApts: [],
     };
   }
 
   handleChange = (name) => (e) => {
-    alert(e);
     this.setState({ [name]: e });
   };
 
   addAvailability = (e) => {
     e.preventDefault();
-    const { date1, start1, end1 } = e.target.elements;
+    const { date, start, end } = e.target.elements;
     // console.log(date1.value);
+    const cont = this.context;
+
+    const st = date.value + " " + start.value;
+    const ed = date.value + " " + end.value;
+
+    let start_t = +new Date(st);
+    let end_t = +new Date(ed);
+
+    let start_ts = Math.floor(start_t / 1000);
+    let end_ts = Math.floor(end_t / 1000);
+
+    // Check if end time is less than start time
+    if (end_ts <= start_ts) {
+      return alert("Start time cannot be greater than end time");
+    }
+
+    // Cut the time range into hour time slots
+    let start_point = start_ts;
+    let end_point = start_ts + 3600;
+
+    while (start_point < end_ts) {
+      console.log("start pointer: " + start_point, "end pointer: " + end_point);
+
+      db.collection("Appointment")
+        .doc()
+        .set({
+          docName: this.state.doctorName,
+          doctorId: cont.currentUser.uid,
+          end: new Date(end_point * 1000),
+          patientID: "",
+          start: new Date(start_point * 1000),
+          status: "open",
+          title: "Open Appointment",
+        });
+
+      start_point += 3600;
+      end_point += 3600;
+    }
+
+    console.log(end_ts);
   };
 
-  deleteApt(i) {
+  deleteApt = (i) => {
+    console.log(this.state.availableApts);
+
     this.setState((state) => ({
-      availableApts: delete state.availableApts[i],
+      availableApts: state.availableApts.filter((row, j) => j !== i),
     }));
-    // this.setState({ availableApts: delete this.state.availableApts[index] });
     console.log(i);
-  }
+  };
 
   getAvailableApts() {
     const cont = this.context;
@@ -106,10 +144,26 @@ export default class EditApts extends Component {
 
   componentDidMount() {
     this.getAvailableApts();
+    const cont = this.context;
+
+    // Get the user lastname and set the sate of user lastname
+    try {
+      db.collection("Users")
+        .doc(cont.currentUser.uid)
+        .get()
+        .then((doc) => {
+          this.setState({
+            fname: doc.data().fname,
+            lname: doc.data().lname,
+            doctorName: doc.data().fname + " " + doc.data().lname,
+          });
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
-    const { date, start, end } = this.state;
     return (
       <div className="content" style={{ paddingTop: 50 }}>
         <Grid
@@ -127,8 +181,7 @@ export default class EditApts extends Component {
                 <form onSubmit={this.addAvailability}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
-                      required
-                      name="date1"
+                      name="date"
                       size="medium"
                       disableToolbar
                       variant="inline"
@@ -136,37 +189,35 @@ export default class EditApts extends Component {
                       margin="normal"
                       id="date-picker-inline"
                       label="Date"
-                      value={date}
+                      value={this.state.date}
                       onChange={this.handleChange("date")}
                       KeyboardButtonProps={{
                         "aria-label": "change date",
                       }}
                     />
                     <KeyboardTimePicker
-                      required
-                      name="start1"
+                      minutesStep={60}
+                      name="start"
                       variant="inline"
                       size="medium"
                       margin="normal"
                       id="time-picker"
                       label="Start Time"
-                      format="HH:mm"
-                      value={start}
+                      value={this.state.start}
                       onChange={this.handleChange("start")}
                       KeyboardButtonProps={{
                         "aria-label": "change time",
                       }}
                     />
                     <KeyboardTimePicker
-                      required
-                      name="end1"
+                      minutesStep={60}
+                      name="end"
                       variant="inline"
                       size="medium"
                       margin="normal"
                       id="time-picker"
                       label="End Time"
-                      format="HH:mm"
-                      value={end}
+                      value={this.state.end}
                       onChange={this.handleChange("end")}
                       KeyboardButtonProps={{
                         "aria-label": "change time",
