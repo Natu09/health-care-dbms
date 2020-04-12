@@ -208,7 +208,7 @@ export default () => {
 
     openAppointments.get().then(function (querySnapshot) {
       querySnapshot.forEach((appointment) => {
-        let calEvent = createCalenderEvent(appointment.data(), appointment.id);
+        let calEvent = createCalendarEvent(appointment.data(), appointment.id);
         docApt.push(calEvent);
       });
     });
@@ -217,7 +217,7 @@ export default () => {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach((appointment) => {
-          let calEvent = createCalenderEvent(
+          let calEvent = createCalendarEvent(
             appointment.data(),
             appointment.id
           );
