@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -6,6 +7,7 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+
 import { Grid, Button } from "@material-ui/core";
 import { Table, Row } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
@@ -30,28 +32,31 @@ const months = [
   "10",
   "11",
   "12",
-];
+]; // 2 digit representation of the monhts
 
 // Initializing time variables
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1); // Add 1 day
-tomorrow.setHours(9); // Set to opening time of clinic
+tomorrow.setHours(9); // Set to opening time of clinic as 9 am
 tomorrow.setMinutes(0);
 
+/**
+ * View page for Doctors to show their
+ */
 export default class EditApts extends Component {
-  static contextType = AuthContext;
+  static contextType = AuthContext; // Context used for
 
   constructor(props) {
     super(props);
-    this.componentDidMount = this.componentDidMount.bind(this);
-    this.handleAlert = this.handleAlert.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this); //
+    this.handleAlert = this.handleAlert.bind(this); // Bind the alert
     this.state = {
-      doctorName: "",
-      fname: "",
-      lname: "",
-      date: tomorrow,
-      start: tomorrow,
-      end: tomorrow,
+      doctorName: "", // name of doctor
+      fname: "", // first name of doctor
+      lname: "", // last name of doctor
+      date: tomorrow, // chosen date
+      start: tomorrow, // chosen start time
+      end: tomorrow, // chosen end time
       availableApts: [],
       _notificationSystem: null,
     };
@@ -90,31 +95,21 @@ export default class EditApts extends Component {
     let start_t = +new Date(st);
     let end_t = +new Date(ed);
 
-    let start_ts = Math.floor(start_t / 1000);
-    let end_ts = Math.floor(end_t / 1000);
+    let sameDate = false;
 
     // Check if the doctor already has an availability that day
     for (let i = 0; i < this.state.availableApts.length; i++) {
-      if (date.value === this.state.availableApts[i][1]) {
-        this.handleAlert(
-          "tc",
-          "error",
-          "Already have an availability for that day!"
-        );
-        return;
-        // return alert("Already have an availability for that day!");
-      }
+      if (date.value === this.state.availableApts[i][1]) sameDate = true;
     }
 
     // Check if end time is less than start time
-    if (end_ts <= start_ts) {
+    if (end_t <= start_t) {
       this.handleAlert(
         "tc",
         "error",
-        "Start time cannot be greater than end time"
+        "End time cannot be before or the same time as start time"
       );
       return;
-      // return alert("Start time cannot be greater than end time");
     }
 
     // Check if the day is a weekend
@@ -123,44 +118,77 @@ export default class EditApts extends Component {
     if (day === 0 || day === 6) {
       this.handleAlert("tc", "error", "Cannot Work on a weekend!");
       return;
-      // return alert("Cannot Work on a weekend!");
     }
 
     // Cut the time range into hour time slots
-    let start_point = start_ts;
-    let end_point = start_ts + 3600;
+    let start_point = start_t;
+    let end_point = start_t + 3600000;
 
-    while (start_point < end_ts) {
+    while (start_point < end_t) {
+      let add = true;
       console.log("start pointer: " + start_point, "end pointer: " + end_point);
+      if (sameDate) {
+        for (let i = 0; i < this.state.availableApts.length; i++) {
+          if (date.value === this.state.availableApts[i][1]) {
+            let temp1 = +new Date(
+              this.state.availableApts[i][1] +
+                " " +
+                this.state.availableApts[i][2]
+            );
+            let temp2 = +new Date(
+              this.state.availableApts[i][1] +
+                " " +
+                this.state.availableApts[i][3]
+            );
 
-      db.collection("Appointment")
-        .add({
-          docName: this.state.doctorName,
-          doctorID: cont.currentUser.uid,
-          end: new Date(end_point * 1000),
-          patientID: "",
-          start: new Date(start_point * 1000),
-          status: "open",
-          title: "Open Appointment",
-        })
-        .then((ref) => {
-          const apt = [
-            ref.id,
-            months[when.getMonth()] +
-              "/" +
-              when.getDate() +
-              "/" +
-              when.getFullYear(),
-            start.value,
-            end.value,
-          ];
-          this.setState({
-            availableApts: this.state.availableApts.concat([apt]),
+            if (start_point === temp1 && end_point === temp2) {
+              add = false;
+              console.log("Could not add this");
+            }
+          }
+        }
+      }
+
+      if (add) {
+        console.log("Added this");
+        const new_start = new Date(start_point);
+        const new_end = new Date(end_point);
+        db.collection("Appointment")
+          .add({
+            docName: this.state.doctorName,
+            doctorID: cont.currentUser.uid,
+            end: new_end,
+            patientID: "",
+            start: new_start,
+            status: "open",
+            title: "Open Appointment",
+          })
+          .then((ref) => {
+            const apt = [
+              ref.id,
+              months[new_start.getMonth()] +
+                "/" +
+                new_start.getDate() +
+                "/" +
+                new_start.getFullYear(),
+              new_start.toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              }),
+              new_end.toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              }),
+            ];
+            this.setState({
+              availableApts: this.state.availableApts.concat([apt]),
+            });
           });
-        });
-
-      start_point += 3600;
-      end_point += 3600;
+      }
+      start_point += 3600000;
+      end_point += 3600000;
     }
 
     this.handleAlert("tc", "success", "Successfully added availability!");
@@ -206,8 +234,16 @@ export default class EditApts extends Component {
             "/" +
             start.getFullYear();
 
-          const st = start.getHours() + ":" + start.getMinutes() + "0";
-          const ed = end.getHours() + ":" + end.getMinutes() + "0";
+          const st = start.toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          });
+          const ed = end.toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          });
 
           const id = doc.id;
 
@@ -251,6 +287,7 @@ export default class EditApts extends Component {
   render() {
     return (
       <div className="content" style={{ paddingTop: 50, height: "100vh" }}>
+        <NotificationSystem ref="notificationSystem" style={style} />
         <Grid
           container
           cols={1}
@@ -362,7 +399,6 @@ export default class EditApts extends Component {
             />
           </Row>
         </Grid>
-        <NotificationSystem ref="notificationSystem" style={style} />
       </div>
     );
   }
