@@ -1,3 +1,8 @@
+/*
+* This file creates the Calendar viewed by Patients
+* We use 
+*/
+
 import React, { useEffect, useState, useContext } from "react";
 
 import Button from "@material-ui/core/Button";
@@ -6,10 +11,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-// import IconButton from "@material-ui/core/IconButton";
-// import CloseIcon from "@material-ui/icons/Close";
-
-// import { withStyles } from "@material-ui/core/styles";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -23,6 +24,7 @@ import "@fullcalendar/list/main.css";
 
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
+
 
 export default () => {
   const { currentUser } = useContext(AuthContext);
@@ -227,14 +229,14 @@ export default () => {
         <FullCalendar
           defaultView="dayGridMonth"
           header={{
-            left: "prev,next today",
+            left: "prev,next, today",
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
           }}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           handleWindowResize={true}
           events={events}
-          editable={true}
+          editable={false}
           themeSystem="bootstrap"
           allDay={true}
           aspectRatio={2}

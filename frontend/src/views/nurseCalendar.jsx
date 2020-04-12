@@ -149,7 +149,7 @@ export default () => {
             event.start = start;
             event.end = end;
             event.id = appointment.id;
-
+            
                           
                         // Set the event colour depending on its status
             switch (appointment.data().status) {
@@ -181,16 +181,17 @@ export default () => {
     <>
       <div style={{ paddingTop: 20 }}>
         <FullCalendar
-          defaultView="dayGridMonth"
+
+          defaultView="timeGridWeek"
           header={{
             left: "prev,next today",
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
           }}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          editable={false}
           handleWindowResize={true}
           events={events}
-          editable={true}
           themeSystem="bootstrap"
           allDay={true}
           aspectRatio={2}
