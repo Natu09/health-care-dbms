@@ -168,7 +168,7 @@ export default () => {
    * @param {event id} id the appointment id tag
    * @return {event} the newly created calendar event
    */
-  function createEvent(appointmentData, id) {
+  function createCalendarEvent(appointmentData, id) {
     const event = appointmentData;
     event.start = new Date(0).setUTCSeconds(appointmentData.start.seconds);
     event.end = new Date(0).setUTCSeconds(appointmentData.end.seconds);
@@ -208,7 +208,7 @@ export default () => {
 
     openAppointments.get().then(function (querySnapshot) {
       querySnapshot.forEach((appointment) => {
-        let calEvent = createEvent(appointment.data(), appointment.id);
+        let calEvent = createCalenderEvent(appointment.data(), appointment.id);
         docApt.push(calEvent);
       });
     });
@@ -217,7 +217,10 @@ export default () => {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach((appointment) => {
-          let calEvent = createEvent(appointment.data(), appointment.id);
+          let calEvent = createCalenderEvent(
+            appointment.data(),
+            appointment.id
+          );
           docApt.push(calEvent);
         });
       })
