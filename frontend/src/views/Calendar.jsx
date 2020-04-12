@@ -83,7 +83,7 @@ export default () => {
             query.update({
               status: "pending",
               patientID: currentUser.uid,
-              title: "Pending Appointment",
+              title: "Pending - " + doc.data().docName,
             });
           }
         }
@@ -109,7 +109,7 @@ export default () => {
             query.update({
               status: "open",
               patientID: "N/A",
-              title: "Open Appointment",
+              title: "Open - " + doc.data().docName,
             });
           }
         }
@@ -259,11 +259,14 @@ export default () => {
         </DialogContent>
         <DialogActions >
           <Button id="buttonCancel" variant="outlined" onClick={handleCancel} color="secondary">
-            Cancel
+            Cancel Appointment
           </Button>
           <Button id="buttonBook" variant="outlined" onClick={handleBook} color="primary">
-            Book
+            Book Appointment
           </Button>
+          <Button id="buttonExit" variant="outlined" onClick={handleClose} color="secondary">
+            Exit
+          </Button>  
         </DialogActions>
       </Dialog>
     </>

@@ -78,7 +78,7 @@ export default () => {
           if (doc.data().status === "pending") {
             query.update({
               status: "booked",
-              title: "Booked",
+              title: "Booked - " + doc.data().docName,
             });
           }
         }
@@ -104,7 +104,7 @@ export default () => {
             query.update({
               status: "open",
               patientID: "N/A",
-              title: "Open",
+              title: "Open - " + doc.data().docName,
             });
           }
         }
@@ -220,7 +220,7 @@ export default () => {
             onClick={handleCancel}
             color="secondary"
           >
-            Cancel
+            Deny Appointment
           </Button>
           <Button
             id="buttonBook"
@@ -228,8 +228,16 @@ export default () => {
             onClick={handleBook}
             color="primary"
           >
-            Book
+            Confirm Appointment
           </Button>
+          <Button
+            id="buttonExit"
+            variant="outlined"
+            onClick={handleClose}
+            color="secondary"
+          >
+            Exit
+          </Button>  
         </DialogActions>
       </Dialog>
     </>
