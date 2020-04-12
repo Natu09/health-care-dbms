@@ -85,11 +85,16 @@ export default () => {
                     var isConflict = checkConflict(eventST, eventET,
                       new Date(0).setUTCSeconds(doc.data().start.seconds), new Date(0).setUTCSeconds(doc.data().end.seconds))
 
-                    console.log(isConflict);
+                    console.log("Time Conflict:", isConflict);
 
                     if(isConflict == true){
                       document.getElementById("buttonBook").style.visibility = "hidden";
-
+                      document.getElementById("modal-description").innerHTML =
+                      ' <DialogContentText  id="modal-description">' +
+                      "<h5>" +
+                      "Appointment cannot be booked because of a conflict with another appointment" + 
+                      "<h5>" +
+                      "</DialogContentText>";
                     }
 
                   })
@@ -180,7 +185,6 @@ export default () => {
     setTemp({});
   };
 
-<<<<<<< HEAD
   function checkConflict(EST, EET, PST, PET){
     if(PST < EST && PET < EST){
       return false;
@@ -191,19 +195,7 @@ export default () => {
     }
   }
 
-  function createCalenderEvent(appointmentData, id){
-=======
-  /**
-   * The createEvent function will read the data queried from firebase
-   * and populate the event with the id, docName, start, and end time. It also
-   * sets the colour of the event based on the event status.
-   * @author: Seng Group 40
-   * @param {appointment Data} appointmentData details about appointment
-   * @param {event id} id the appointment id tag
-   * @return {event} the newly created calendar event
-   */
-  function createCalendarEvent(appointmentData, id) {
->>>>>>> a9b0da74a02cc8f9ad90e3796aae6e906f94aa60
+  function createCalendarEvent(appointmentData, id){
     const event = appointmentData;
     event.start = new Date(0).setUTCSeconds(appointmentData.start.seconds);
     event.end = new Date(0).setUTCSeconds(appointmentData.end.seconds);
@@ -303,6 +295,8 @@ export default () => {
           </DialogContentText>
           <DialogContentText id="end-time">
             Appointment Content goes here
+          </DialogContentText>
+          <DialogContentText id="modal-description">
           </DialogContentText>
         </DialogContent>
         <DialogActions>
