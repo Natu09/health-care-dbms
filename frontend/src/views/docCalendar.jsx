@@ -22,11 +22,11 @@ export default function DocCalendar(props) {
     header: {
       left: "prev,next today",
       center: "title",
-      right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+      right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
     },
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     eventColor: "#378006", // Greenish
-    displayEventEnd: true
+    displayEventEnd: true,
   };
 
   /**
@@ -38,28 +38,17 @@ export default function DocCalendar(props) {
     db.collection("Appointment")
       .where("doctorID", "==", currentUser.uid)
       .get()
-      .then(function(querySnapshot) {
-        querySnapshot.forEach(doc => {
-          // Reformating time format for full calendar event
-
-          // Seting the Unix time
-          const epochStart = doc.data().start.seconds;
-          const epochEnd = doc.data().end.seconds;
-
+      .then(function (querySnapshot) {
+        querySnapshot.forEach((doc) => {
           // Initilizing new Date objets
-          let start = new Date(0);
-          let end = new Date(0);
-
-          // Set date object times to Unix time from event object
-          start.setUTCSeconds(epochStart);
-          end.setUTCSeconds(epochEnd);
+          let start = new Date(doc.data().start.seconds * 1000);
+          let end = new Date(doc.data().end.seconds * 1000);
 
           const event = doc.data();
           event.start = start;
           event.end = end;
 
           // Set apt colour here
-
           docApt.push(event);
         });
       })
@@ -70,7 +59,7 @@ export default function DocCalendar(props) {
 
   useEffect(() => {
     getEvents(); // Change event state and mount
-  });
+  }, []);
 
   // Render view
   return (
