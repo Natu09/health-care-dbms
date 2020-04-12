@@ -121,6 +121,28 @@ export default () => {
     setTemp({});
   };
 
+  function createCalenderEvent(appointmentData, id){
+    const event = appointmentData;
+    event.start = new Date(0)
+        .setUTCSeconds(appointmentData.start.seconds);
+    event.end = new Date(0)
+      .setUTCSeconds(appointmentData.end.seconds);
+    event.id = id;
+    event.docName = "Dr. " + event.docName;
+
+    switch (event.status) {
+      case "booked":
+        event.color = "blue"; 
+        break;
+      case "pending":
+        event.color = "orange"; 
+        break;
+      default:
+        event.color = "green";
+        break;
+    }
+    return event;
+  }
   
   /**
    * Retrieves all events related to the doctors that nurse is assigned to
@@ -138,31 +160,7 @@ export default () => {
           const doctorID = appointment.data().doctorID;
           
           if ( docList.includes(doctorID) ) {
-              
-            // Reformating time format for full calendar event
-            // Initilizing new Date objets
-            let start = new Date(appointment.data().start.seconds * 1000);
-            let end = new Date(appointment.data().end.seconds * 1000);
-
-
-            const event = appointment.data();
-            event.start = start;
-            event.end = end;
-            event.id = appointment.id;
-            
-                          
-                        // Set the event colour depending on its status
-            switch (appointment.data().status) {
-              case "booked":
-                event.color = "blue"; // Blue
-                break;
-              case "pending":
-                event.color = "orange"; // Yellow
-                break;
-              default:
-                event.color = "green";
-                break;
-            }
+            let event = createCalenderEvent(appointment.data(), appointment.id)
             docApt.push(event);
           }
         });

@@ -130,7 +130,7 @@ export default () => {
 
 
 
-  function createEvent(appointmentData, id){
+  function createCalenderEvent(appointmentData, id){
     const event = appointmentData;
     event.start = new Date(0)
         .setUTCSeconds(appointmentData.start.seconds);
@@ -161,14 +161,14 @@ export default () => {
 
     openAppointments.get().then( function (querySnapshot) {
       querySnapshot.forEach((appointment) => {
-        let calEvent = createEvent(appointment.data(), appointment.id)
+        let calEvent = createCalenderEvent(appointment.data(), appointment.id)
         docApt.push(calEvent);
       });
     });
 
     patientAppointments.get().then( function (querySnapshot) {
       querySnapshot.forEach((appointment) => {
-        let calEvent = createEvent(appointment.data(), appointment.id)
+        let calEvent = createCalenderEvent(appointment.data(), appointment.id)
         docApt.push(calEvent);
       });
     }).then( () => {
@@ -179,6 +179,7 @@ export default () => {
   useEffect(() => {
     getEvents(); // Change event state and mount
   }, []);
+
 
   // Render view
   return (
