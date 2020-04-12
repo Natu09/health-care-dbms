@@ -253,7 +253,7 @@ export default class EditApts extends Component {
               ctTableResponsive
               content={
                 <Table hover>
-                  <thead>
+                  <thead variant="dark">
                     <tr>
                       {thArr.map((prop, key) => {
                         return <th key={key}>{prop}</th>;
