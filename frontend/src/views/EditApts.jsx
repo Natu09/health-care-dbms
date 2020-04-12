@@ -7,28 +7,53 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { Grid, Button } from "@material-ui/core";
-import { Row } from "react-bootstrap";
+import { Table, Row } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
-import { Table } from "react-bootstrap";
 
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-const thArr = ["ID", "Date", "Start", "End", "Actions"];
+import NotificationSystem from "react-notification-system";
+import { style } from "../variables/Variables";
+
+const thArr = ["ID", "Date", "Start", "End", "Actions"]; // Table Headers
+const months = [
+  "01",
+  "02",
+  "03",
+  "04",
+  "05",
+  "06",
+  "07",
+  "08",
+  "09",
+  "10",
+  "11",
+  "12",
+];
+
+// Initializing time variables
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1); // Add 1 day
+tomorrow.setHours(9); // Set to opening time of clinic
+tomorrow.setMinutes(0);
 
 export default class EditApts extends Component {
   static contextType = AuthContext;
 
   constructor(props) {
     super(props);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.handleAlert = this.handleAlert.bind(this);
     this.state = {
       doctorName: "",
       fname: "",
       lname: "",
-      date: new Date(),
-      start: new Date(),
-      end: new Date(),
+      date: tomorrow,
+      start: tomorrow,
+      end: tomorrow,
       availableApts: [],
+      _notificationSystem: null,
     };
   }
 
@@ -36,10 +61,27 @@ export default class EditApts extends Component {
     this.setState({ [name]: e });
   };
 
+  handleAlert(position, level, message) {
+    const logo = level === "error" ? "pe-7s-attention" : "pe-7s-like2";
+    const title = level === "error" ? "Oops!" : "Yay!";
+
+    this.state._notificationSystem.addNotification({
+      title: <span data-notify="icon" className={logo}></span>,
+      message: (
+        <div>
+          <h1>{title}</h1>
+          <p>{message}</p>
+        </div>
+      ),
+      level: level,
+      position: position,
+      autoDismiss: 2,
+    });
+  }
+
   addAvailability = (e) => {
     e.preventDefault();
     const { date, start, end } = e.target.elements;
-    // console.log(date1.value);
     const cont = this.context;
 
     const st = date.value + " " + start.value;
@@ -51,9 +93,37 @@ export default class EditApts extends Component {
     let start_ts = Math.floor(start_t / 1000);
     let end_ts = Math.floor(end_t / 1000);
 
+    // Check if the doctor already has an availability that day
+    for (let i = 0; i < this.state.availableApts.length; i++) {
+      if (date.value === this.state.availableApts[i][1]) {
+        this.handleAlert(
+          "tc",
+          "error",
+          "Already have an availability for that day!"
+        );
+        return;
+        // return alert("Already have an availability for that day!");
+      }
+    }
+
     // Check if end time is less than start time
     if (end_ts <= start_ts) {
-      return alert("Start time cannot be greater than end time");
+      this.handleAlert(
+        "tc",
+        "error",
+        "Start time cannot be greater than end time"
+      );
+      return;
+      // return alert("Start time cannot be greater than end time");
+    }
+
+    // Check if the day is a weekend
+    const when = new Date(st);
+    const day = when.getDay();
+    if (day === 0 || day === 6) {
+      this.handleAlert("tc", "error", "Cannot Work on a weekend!");
+      return;
+      // return alert("Cannot Work on a weekend!");
     }
 
     // Cut the time range into hour time slots
@@ -64,8 +134,7 @@ export default class EditApts extends Component {
       console.log("start pointer: " + start_point, "end pointer: " + end_point);
 
       db.collection("Appointment")
-        .doc()
-        .set({
+        .add({
           docName: this.state.doctorName,
           doctorID: cont.currentUser.uid,
           end: new Date(end_point * 1000),
@@ -73,11 +142,28 @@ export default class EditApts extends Component {
           start: new Date(start_point * 1000),
           status: "open",
           title: "Open Appointment",
+        })
+        .then((ref) => {
+          const apt = [
+            ref.id,
+            months[when.getMonth()] +
+              "/" +
+              when.getDate() +
+              "/" +
+              when.getFullYear(),
+            start.value,
+            end.value,
+          ];
+          this.setState({
+            availableApts: this.state.availableApts.concat([apt]),
+          });
         });
 
       start_point += 3600;
       end_point += 3600;
     }
+
+    this.handleAlert("tc", "success", "Successfully added availability!");
   };
 
   deleteApt = (i) => {
@@ -113,21 +199,6 @@ export default class EditApts extends Component {
           const start = new Date(doc.data().start.seconds * 1000);
           const end = new Date(doc.data().end.seconds * 1000);
 
-          let months = [
-            "01",
-            "02",
-            "03",
-            "04",
-            "05",
-            "06",
-            "07",
-            "08",
-            "09",
-            "10",
-            "11",
-            "12",
-          ];
-
           const date =
             months[start.getMonth()] +
             "/" +
@@ -155,9 +226,11 @@ export default class EditApts extends Component {
   }
 
   componentDidMount() {
-    this.getAvailableApts();
-    const cont = this.context;
+    this.getAvailableApts(); // Get all available appointments for doctor
 
+    this.setState({ _notificationSystem: this.refs.notificationSystem });
+
+    const cont = this.context;
     // Get the user lastname and set the sate of user lastname
     try {
       db.collection("Users")
@@ -177,7 +250,7 @@ export default class EditApts extends Component {
 
   render() {
     return (
-      <div className="content" style={{ paddingTop: 50 }}>
+      <div className="content" style={{ paddingTop: 50, height: "100vh" }}>
         <Grid
           container
           cols={1}
@@ -201,6 +274,7 @@ export default class EditApts extends Component {
                       margin="normal"
                       id="date-picker-inline"
                       label="Date"
+                      minDate={tomorrow}
                       value={this.state.date}
                       onChange={this.handleChange("date")}
                       KeyboardButtonProps={{
@@ -215,6 +289,7 @@ export default class EditApts extends Component {
                       margin="normal"
                       id="time-picker"
                       label="Start Time"
+                      views={["hours"]}
                       value={this.state.start}
                       onChange={this.handleChange("start")}
                       KeyboardButtonProps={{
@@ -229,6 +304,7 @@ export default class EditApts extends Component {
                       margin="normal"
                       id="time-picker"
                       label="End Time"
+                      views={["hours"]}
                       value={this.state.end}
                       onChange={this.handleChange("end")}
                       KeyboardButtonProps={{
@@ -286,6 +362,7 @@ export default class EditApts extends Component {
             />
           </Row>
         </Grid>
+        <NotificationSystem ref="notificationSystem" style={style} />
       </div>
     );
   }
