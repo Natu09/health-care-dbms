@@ -140,8 +140,15 @@ export default () => {
             console.log("event start", doc.data().start);
             console.log("time to", doc.data().start -  new Date()/1000);
             
+            const cancelWarning = "There is less than 24 hrs to this appointment. If you cancel now there will be a financial penalty. Do you want to continue?";
             if ( doc.data().start - new Date()/1000 < 24*60*60){
-              window.alert("There is less than 24 hrs to this appointment. If you cancel now there will be a financial penalty");
+              if (window.alert(cancelWarning)){
+                query.update({
+                  status: "open",
+                  patientID: "N/A",
+                  title: "Open - " + doc.data().docName,
+                });
+              }
             }
             query.update({
               status: "open",
