@@ -1,14 +1,20 @@
 import React, { Component } from "react";
 
 import { Card } from "components/Card/Card.jsx";
-import { Grid, Button } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 import { Table } from "react-bootstrap";
 
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-const thArr = ["ID", "Type", "Referred By", "Referred To", "Action"];
+const thArr = [
+  "ID",
+  "Type",
+  "Referred By",
+  "Referred To",
+  "Select Appointment Date",
+];
 
 export default class Referals extends Component {
   static contextType = AuthContext;
@@ -18,7 +24,19 @@ export default class Referals extends Component {
     this.state = {
       referals: [],
       open: false,
+      value: "",
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+  }
+
+  handleSubmit(event) {
+    alert("Your favorite flavor is: " + this.state.value);
+    event.preventDefault();
   }
 
   getReference() {
@@ -62,12 +80,12 @@ export default class Referals extends Component {
           ref.apts = apts;
 
           arr.push(ref);
-          console.log(ref);
+          // console.log(ref);
         });
       })
       .then(() => {
         this.setState({ referals: arr });
-        console.log(this.state.referals);
+        // console.log(this.state.referals);
       });
   }
 
@@ -96,7 +114,7 @@ export default class Referals extends Component {
 
   render() {
     return (
-      <div className="content" style={{ paddingTop: 50 }}>
+      <div style={{ paddingTop: 50 }}>
         <Grid
           container
           cols={1}
@@ -117,21 +135,35 @@ export default class Referals extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.referals.map((ref, index) => {
+                  {this.state.referals.map((refs, index) => {
                     return (
                       <tr key={index}>
-                        <td> {ref.id} </td>
-                        <td> {ref.type} </td>
-                        <td> {ref.fromDocName} </td>
-                        <td> {ref.toDocName} </td>
+                        <td> {refs.id} </td>
+                        <td> {refs.type} </td>
+                        <td> {refs.fromDocName} </td>
+                        <td> {refs.toDocName} </td>
                         <td>
-                          <Button
-                            className="col-md-3 pull-right"
-                            variant="outlined"
-                            // onClick={handleClickOpen}
-                          >
-                            Book
-                          </Button>
+                          <form onSubmit={this.handleSubmit}>
+                            <label>
+                              Pick your preffered test date:
+                              <select
+                                value={this.state.value}
+                                onChange={this.handleChange}
+                              >
+                                {console.log(refs.apts)}
+                                <option value="lime">Lime</option>
+                                {refs.apts.forEach((a) => {
+                                  console.log(a);
+                                })}
+
+                                {/* <option value="grapefruit">Grapefruit</option>
+                                <option value="lime">Lime</option>
+                                <option value="coconut">Coconut</option>
+                                <option value="mango">Mango</option> */}
+                              </select>
+                            </label>
+                            <input type="submit" value="Submit" />
+                          </form>
                         </td>
                       </tr>
                     );
