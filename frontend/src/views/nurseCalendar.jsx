@@ -1,3 +1,9 @@
+/*
+ * This file creates the Calendar that can be viewed and interacted with
+ * by the Nurses
+ */
+
+// Importing the required libraries
 import React, { useEffect, useState, useContext } from "react";
 
 import Button from "@material-ui/core/Button";
@@ -21,11 +27,22 @@ import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
 export default () => {
-  const { currentUser } = useContext(AuthContext);
-  const [events, setEvents] = useState([]);
+  // Intializing state variables
+  const { currentUser } = useContext(AuthContext);  // Gets the id of the nurse signed in
+  const [events, setEvents] = useState([]);         
   const [open, setOpen] = React.useState(false);
   const [temp, setTemp] = useState({});
 
+  /**
+   * The handleClickOpen function will display a modal when the user
+   * clicks on an appointment. This modal will also condtionally render
+   * a cancel and book appointment button when required, and will hide them
+   * when not required. This function does not return anything but updates the
+   * temp value which is used to query the firebase db.
+   * @author: Seng Group 40
+   * @param {event information} info Event object that was clicked
+   *
+   */
   const handleClickOpen = (info) => {
     setOpen(true);
 
@@ -67,7 +84,14 @@ export default () => {
 
     setTemp(info.event);
   };
-
+  
+  /**
+   * The handleBook function will be used when a user clicks to book the
+   * appointment. When the button is clicked, the events and firebase db
+   * are updated accordingly.
+   * @author: Seng Group 40
+   *
+   */
   const handleBook = () => {
     setOpen(false);
     let query = db.collection("Appointment").doc(temp.id);
@@ -90,6 +114,13 @@ export default () => {
     setTemp({});
   };
 
+  /**
+   * The handleCancel function will be used when a user clicks to cancel the
+   * appointment. When the button is clicked, the events and firebase db
+   * are updated accordingly.
+   * @author: Seng Group 40
+   *
+   */
   const handleCancel = () => {
     setOpen(false);
     let query = db.collection("Appointment").doc(temp.id);
@@ -116,26 +147,38 @@ export default () => {
     setTemp({});
   };
 
+  /**
+   * The handleClosefunction will be used when a user clicks to exit the modal
+   * @author: Seng Group 40
+   *
+   */
   const handleClose = () => {
     setOpen(false);
     setTemp({});
   };
 
-  function createCalenderEvent(appointmentData, id){
+  /**
+   * The createEvent function will read the data queried from firebase
+   * and populate the event with the id, docName, start, and end time. It also
+   * sets the colour of the event based on the event status.
+   * @author: Seng Group 40
+   * @param {appointment Data} appointmentData details about appointment
+   * @param {event id} id the appointment id tag
+   * @return {event} the newly created calendar event
+   */
+  function createCalenderEvent(appointmentData, id) {
     const event = appointmentData;
-    event.start = new Date(0)
-        .setUTCSeconds(appointmentData.start.seconds);
-    event.end = new Date(0)
-      .setUTCSeconds(appointmentData.end.seconds);
+    event.start = new Date(0).setUTCSeconds(appointmentData.start.seconds);
+    event.end = new Date(0).setUTCSeconds(appointmentData.end.seconds);
     event.id = id;
     event.docName = "Dr. " + event.docName;
 
     switch (event.status) {
       case "booked":
-        event.color = "blue"; 
+        event.color = "blue";
         break;
       case "pending":
-        event.color = "orange"; 
+        event.color = "orange";
         break;
       default:
         event.color = "green";
@@ -143,29 +186,42 @@ export default () => {
     }
     return event;
   }
-  
+
   /**
-   * Retrieves all events related to the doctors that nurse is assigned to
+   * The getEvents function will query the firebase db to find all matching
+   * appointments for the doctors the nurse is assigned to.
+   * It checks to see if the doctorID of all appointments in the firebase
+   * matches with any of the doctors in the docList of the nurse,
+   * if it does, then it creates the events and pushes them into the
+   * docApt array which is used to setEvents.
+   * @author: Seng Group 40
+   *
    */
   function getEvents() {
     let docApt = [];
 
     const queryNurse = db.collection("Users").doc(currentUser.uid);
-  
+
     queryNurse.get().then((nurse) => {
       const docList = nurse.data().docList;
 
-      db.collection("Appointment").get().then((querySnapshot) => {
-        querySnapshot.forEach((appointment) => {
-          const doctorID = appointment.data().doctorID;
-          
-          if ( docList.includes(doctorID) ) {
-            let event = createCalenderEvent(appointment.data(), appointment.id)
-            docApt.push(event);
-          }
-        });
-      }).then(() => {
-        setEvents(docApt)
+      db.collection("Appointment")
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((appointment) => {
+            const doctorID = appointment.data().doctorID;
+
+            if (docList.includes(doctorID)) {
+              let event = createCalenderEvent(
+                appointment.data(),
+                appointment.id
+              );
+              docApt.push(event);
+            }
+          });
+        })
+        .then(() => {
+          setEvents(docApt);
         });
     });
   }
@@ -179,7 +235,6 @@ export default () => {
     <>
       <div style={{ paddingTop: 20 }}>
         <FullCalendar
-
           defaultView="timeGridWeek"
           header={{
             left: "prev,next today",
@@ -236,7 +291,7 @@ export default () => {
             color="secondary"
           >
             Exit
-          </Button>  
+          </Button>
         </DialogActions>
       </Dialog>
     </>
