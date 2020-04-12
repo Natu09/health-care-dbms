@@ -121,6 +121,7 @@ export default () => {
     setTemp({});
   };
 
+  
   /**
    * Retrieves all events related to the doctors that nurse is assigned to
    */
@@ -128,48 +129,46 @@ export default () => {
     let docApt = [];
 
     const queryNurse = db.collection("Users").doc(currentUser.uid);
-
+  
     queryNurse.get().then((nurse) => {
       const docList = nurse.data().docList;
-      docList.forEach((docID) => {
-        let queryDoctor = db
-          .collection("Appointment")
-          .where("doctorID", "==", docID);
-        queryDoctor
-          .get()
-          .then(function (querySnapshot) {
-            querySnapshot.forEach((appointment) => {
-              // Reformating time format for full calendar event
 
-              // Initilizing new Date objets
-              let start = new Date(appointment.data().start.seconds * 1000);
-              let end = new Date(appointment.data().end.seconds * 1000);
+      db.collection("Appointment").get().then((querySnapshot) => {
+        querySnapshot.forEach((appointment) => {
+          const doctorID = appointment.data().doctorID;
+          
+          if ( docList.includes(doctorID) ) {
+              
+            // Reformating time format for full calendar event
+            // Initilizing new Date objets
+            let start = new Date(appointment.data().start.seconds * 1000);
+            let end = new Date(appointment.data().end.seconds * 1000);
 
-              const event = appointment.data();
-              event.start = start;
-              event.end = end;
-              event.id = appointment.id;
 
-              // Set the event colour depending on its status
-              switch (appointment.data().status) {
-                case "booked":
-                  event.color = "blue"; // Blue
-                  break;
-                case "pending":
-                  event.color = "orange"; // Yellow
-                  break;
-                default:
-                  event.color = "green";
-                  break;
-              }
+            const event = appointment.data();
+            event.start = start;
+            event.end = end;
+            event.id = appointment.id;
 
-              docApt.push(event);
-            });
-          })
-          .then(() => {
-            setEvents(events.concat(docApt));
-          });
-      });
+                          
+                        // Set the event colour depending on its status
+            switch (appointment.data().status) {
+              case "booked":
+                event.color = "blue"; // Blue
+                break;
+              case "pending":
+                event.color = "orange"; // Yellow
+                break;
+              default:
+                event.color = "green";
+                break;
+            }
+            docApt.push(event);
+          }
+        });
+      }).then(() => {
+        setEvents(docApt)
+        });
     });
   }
 
