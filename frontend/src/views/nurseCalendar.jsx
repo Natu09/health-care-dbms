@@ -59,12 +59,11 @@ export default () => {
       "<h5>" +
       "</DialogContentText>";
 
-    
-    if (info.event.extendedProps.status === "open"){
+    if (info.event.extendedProps.status === "open") {
       document.getElementById("buttonCancel").style.visibility = "hidden";
       document.getElementById("buttonBook").style.visibility = "hidden";
-    } else if (info.event.extendedProps.status === "booked"){
-      document.getElementById("buttonBook").style.visibility = "hidden";      
+    } else if (info.event.extendedProps.status === "booked") {
+      document.getElementById("buttonBook").style.visibility = "hidden";
     }
 
     setTemp(info.event);
@@ -130,23 +129,22 @@ export default () => {
   function getEvents() {
     const docApt = [];
 
-    var queryNurse = db.collection("Users").where("uid", "==", currentUser.uid);
-    queryNurse.get().then(function (doc) {
-      doc.forEach((d) => {
-        let docID = d.data().docList[0];
-
+    var queryNurse = db.collection("Users").doc(currentUser.uid);
+    queryNurse.get().then(function (nurse) {
+      const docList = nurse.data().docList;
+      docList.forEach((docID) => {
         var queryDoctor = db
           .collection("Appointment")
           .where("doctorID", "==", docID);
         queryDoctor
           .get()
           .then(function (querySnapshot) {
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach((appointment) => {
               // Reformating time format for full calendar event
 
               // Seting the Unix time
-              const epochStart = doc.data().start.seconds;
-              const epochEnd = doc.data().end.seconds;
+              const epochStart = appointment.data().start.seconds;
+              const epochEnd = appointment.data().end.seconds;
 
               // Initilizing new Date objets
               let start = new Date(0);
@@ -156,18 +154,17 @@ export default () => {
               start.setUTCSeconds(epochStart);
               end.setUTCSeconds(epochEnd);
 
-              const event = doc.data();
+              const event = appointment.data();
               event.start = start;
               event.end = end;
-              event.id = doc.id;
-              event.status = doc.data().status;
+              event.id = appointment.id;
 
               // Set the event colour depending on its status
-              if (doc.data().status === "booked") {
+              if (appointment.data().status === "booked") {
                 event.color = "blue"; // Blue
-              } else if (doc.data().status === "pending") {
+              } else if (appointment.data().status === "pending") {
                 event.color = "orange"; // Yellow
-              } else if (doc.data().status === "open") {
+              } else if (appointment.data().status === "open") {
                 event.color = "green";
               }
 
@@ -184,7 +181,6 @@ export default () => {
   useEffect(() => {
     getEvents(); // Change event state and mount
   }, []);
-
 
   // Render view
   return (
@@ -223,11 +219,21 @@ export default () => {
             Appointment Content goes here
           </DialogContentText>
         </DialogContent>
-        <DialogActions >
-          <Button id="buttonCancel" variant="outlined" onClick={handleCancel} color="secondary">
+        <DialogActions>
+          <Button
+            id="buttonCancel"
+            variant="outlined"
+            onClick={handleCancel}
+            color="secondary"
+          >
             Cancel
           </Button>
-          <Button id="buttonBook" variant="outlined" onClick={handleBook} color="primary">
+          <Button
+            id="buttonBook"
+            variant="outlined"
+            onClick={handleBook}
+            color="primary"
+          >
             Book
           </Button>
         </DialogActions>
