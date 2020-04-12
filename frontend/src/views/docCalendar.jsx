@@ -48,7 +48,18 @@ export default function DocCalendar(props) {
           event.start = start;
           event.end = end;
 
-          // Set apt colour here
+          // Set appointment colour based on status
+          switch (doc.data().status) {
+            case "open":
+              event.color = "green";
+              break;
+            case "pending":
+              event.color = "orange";
+              break;
+            default:
+              event.color = "blue";
+              break;
+          }
           docApt.push(event);
         });
       })
