@@ -61,6 +61,14 @@ export default () => {
       "<h5>" +
       "</DialogContentText>";
 
+
+    if (info.event.extendedProps.status === "open") {
+      document.getElementById("buttonCancel").style.visibility = "hidden";
+    } else if (info.event.extendedProps.status === "booked" ||
+                info.event.extendedProps.status === "pending") {
+      document.getElementById("buttonBook").style.visibility = "hidden";
+    }
+
     setTemp(info.event);
   };
 
@@ -249,11 +257,11 @@ export default () => {
             Appointment Content goes here
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={handleCancel} color="secondary">
+        <DialogActions >
+          <Button id="buttonCancel" variant="outlined" onClick={handleCancel} color="secondary">
             Cancel
           </Button>
-          <Button variant="outlined" onClick={handleBook} color="primary">
+          <Button id="buttonBook" variant="outlined" onClick={handleBook} color="primary">
             Book
           </Button>
         </DialogActions>
