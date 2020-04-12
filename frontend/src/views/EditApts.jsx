@@ -69,7 +69,7 @@ export default class EditApts extends Component {
       title: <span data-notify="icon" className={logo}></span>,
       message: (
         <div>
-          <h1>Oops!</h1>
+          <h1>{title}</h1>
           <p>{message}</p>
         </div>
       ),
