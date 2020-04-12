@@ -24,7 +24,6 @@ export default () => {
   const { currentUser } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const [open, setOpen] = React.useState(false);
-  const [eventPendingOrBooked, setPendingOrBooked] = React.useState(false);
   const [temp, setTemp] = useState({});
 
   const handleClickOpen = (info) => {
@@ -79,7 +78,6 @@ export default () => {
           if (doc.data().status === "pending") {
             query.update({
               status: "booked",
-              // patientID: currentUser.uid,
               title: "Booked",
             });
           }
@@ -124,7 +122,7 @@ export default () => {
   };
 
   /**
-   * Retrieves all events related to the doctos
+   * Retrieves all events related to the doctors that nurse is assigned to
    */
   function getEvents() {
     let docApt = [];
