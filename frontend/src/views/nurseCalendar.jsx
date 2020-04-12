@@ -28,8 +28,8 @@ import { db } from "../firebase";
 
 export default () => {
   // Intializing state variables
-  const { currentUser } = useContext(AuthContext);
-  const [events, setEvents] = useState([]);
+  const { currentUser } = useContext(AuthContext);  // Gets the id of the nurse signed in
+  const [events, setEvents] = useState([]);         
   const [open, setOpen] = React.useState(false);
   const [temp, setTemp] = useState({});
 
@@ -39,8 +39,8 @@ export default () => {
    * a cancel and book appointment button when required, and will hide them
    * when not required. This function does not return anything but updates the
    * temp value which is used to query the firebase db.
-   * @author: Lucas, Mohit, Justin
-   * @param {event information} info information about the event
+   * @author: Seng Group 40
+   * @param {event information} info Event object that was clicked
    *
    */
   const handleClickOpen = (info) => {
@@ -84,11 +84,12 @@ export default () => {
 
     setTemp(info.event);
   };
+  
   /**
    * The handleBook function will be used when a user clicks to book the
    * appointment. When the button is clicked, the events and firebase db
    * are updated accordingly.
-   * @author: Nathaniel, Lucas, Mohit
+   * @author: Seng Group 40
    *
    */
   const handleBook = () => {
@@ -117,7 +118,7 @@ export default () => {
    * The handleCancel function will be used when a user clicks to cancel the
    * appointment. When the button is clicked, the events and firebase db
    * are updated accordingly.
-   * @author: Nathaniel, Lucas, Mohit
+   * @author: Seng Group 40
    *
    */
   const handleCancel = () => {
@@ -148,7 +149,7 @@ export default () => {
 
   /**
    * The handleClosefunction will be used when a user clicks to exit the modal
-   * @author: Nathaniel
+   * @author: Seng Group 40
    *
    */
   const handleClose = () => {
@@ -160,7 +161,7 @@ export default () => {
    * The createEvent function will read the data queried from firebase
    * and populate the event with the id, docName, start, and end time. It also
    * sets the colour of the event based on the event status.
-   * @author: Lucas, Mohit
+   * @author: Seng Group 40
    * @param {appointment Data} appointmentData details about appointment
    * @param {event id} id the appointment id tag
    * @return {event} the newly created calendar event
@@ -193,7 +194,7 @@ export default () => {
    * matches with any of the doctors in the docList of the nurse,
    * if it does, then it creates the events and pushes them into the
    * docApt array which is used to setEvents.
-   * @author: Lucas, Nathaniel, Mohit
+   * @author: Seng Group 40
    *
    */
   function getEvents() {

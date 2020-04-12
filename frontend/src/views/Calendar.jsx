@@ -39,8 +39,8 @@ export default () => {
    * a cancel and book appointment button when required, and will hide them
    * when not required. This function does not return anything but updates the
    * temp value which is used to query the firebase db.
-   * @author: Lucas, Mohit, Justin
-   * @param {event information} info information about the event
+   * @author: Seng Group 40
+   * @param {event information} info Event object that was clicked
    *
    */
   const handleClickOpen = (info) => {
@@ -90,7 +90,7 @@ export default () => {
    * The handleBook function will be used when a user clicks to book the
    * appointment. When the button is clicked, the events and firebase db
    * are updated accordingly.
-   * @author: Nathaniel, Lucas, Mohit
+   * @author: Seng Group 40
    *
    */
   const handleBook = () => {
@@ -120,7 +120,7 @@ export default () => {
    * The handleCancel function will be used when a user clicks to cancel the
    * appointment. When the button is clicked, the events and firebase db
    * are updated accordingly.
-   * @author: Nathaniel, Lucas, Mohit
+   * @author: Seng Group 40
    *
    */
   const handleCancel = () => {
@@ -151,7 +151,7 @@ export default () => {
 
   /**
    * The handleClosefunction will be used when a user clicks to exit the modal
-   * @author: Nathaniel
+   * @author: Seng Group 40
    *
    */
   const handleClose = () => {
@@ -163,7 +163,7 @@ export default () => {
    * The createEvent function will read the data queried from firebase
    * and populate the event with the id, docName, start, and end time. It also
    * sets the colour of the event based on the event status.
-   * @author: Lucas, Mohit
+   * @author: Seng Group 40
    * @param {appointment Data} appointmentData details about appointment
    * @param {event id} id the appointment id tag
    * @return {event} the newly created calendar event
@@ -193,7 +193,7 @@ export default () => {
    * The getEvents function will query the firebase db to find all matching
    * appointments for the current patient. It thend creates the events
    * and pushes them into the docApt array which is used to setEvents.
-   * @author: Lucas, Nathaniel, Mohit
+   * @author: Seng Group 40
    *
    */
   function getEvents() {
