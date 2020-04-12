@@ -170,7 +170,6 @@ export default () => {
           })
           .then(() => {
             setEvents(events.concat(docApt));
-            console.log(events);
           });
       });
     });
