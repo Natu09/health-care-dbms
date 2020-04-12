@@ -1,6 +1,6 @@
 /*
 * This file creates the Calendar viewed by Patients
-* We use 
+* We use
 */
 
 import React, { useEffect, useState, useContext } from "react";
@@ -24,6 +24,7 @@ import "@fullcalendar/list/main.css";
 
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
+
 
 
 export default () => {
@@ -63,6 +64,29 @@ export default () => {
       "<h5>" +
       "</DialogContentText>";
 
+      //console.log(info.event.start.getTime());
+      var eventST = info.event.start.getTime();
+      var eventET = info.event.end.getTime();
+
+      var queryTime = db.collection("Appointment").where("patientID", "==", currentUser.uid);
+      queryTime.get()
+                .then(function(querySnapshot){
+                  querySnapshot.forEach(function(doc){
+                    //console.log(doc.data().start);
+                    //console.log(new Date(0)
+                        //.setUTCSeconds(doc.data().start.seconds));
+                    var isConflict = checkConflict(eventST, eventET,
+                      new Date(0).setUTCSeconds(doc.data().start.seconds), new Date(0).setUTCSeconds(doc.data().end.seconds))
+
+                    console.log(isConflict);
+
+                    if(isConflict == true){
+                      document.getElementById("buttonBook").style.visibility = "hidden";
+
+                    }
+
+                  })
+                });
 
     if (info.event.extendedProps.status === "open") {
       document.getElementById("buttonCancel").style.visibility = "hidden";
@@ -128,7 +152,15 @@ export default () => {
     setTemp({});
   };
 
-
+  function checkConflict(EST, EET, PST, PET){
+    if(PST < EST && PET < EST){
+      return false;
+    }else if(PST> EET){
+      return false;
+    }else{
+      return true;
+    }
+  }
 
   function createCalenderEvent(appointmentData, id){
     const event = appointmentData;
@@ -227,7 +259,7 @@ export default () => {
           </Button>
           <Button id="buttonExit" variant="outlined" onClick={handleClose} color="secondary">
             Exit
-          </Button>  
+          </Button>
         </DialogActions>
       </Dialog>
     </>
