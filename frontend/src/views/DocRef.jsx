@@ -4,7 +4,7 @@ import { Grid, Row, Col } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
 import { Table } from "react-bootstrap";
-// import { AuthContext } from "..Auth";
+import { AuthContext } from "../Auth";
 // import { db } from "../firebase";
 
 const tableHeader = ["Patient ID", "Name", ""];
@@ -20,13 +20,13 @@ export class DocRef extends Component {
     };
   }
 
-  getPatients() {
-    return;
-  }
+  // getPatients() {
+  //   return;
+  // }
 
-  componentDidMount() {
-    getPatients();
-  }
+  // componentDidMount() {
+  //   getPatients();
+  // }
 
   render() {
     return (
@@ -38,6 +38,8 @@ export class DocRef extends Component {
           alignItems: "center",
           //   position: "absolute",
           margin: "auto",
+          paddingTop: 10,
+          height: "100vh",
           //   top: 0,
           //   right: 0,
           //   bottom: 0,
