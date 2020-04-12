@@ -17,6 +17,20 @@ import NotificationSystem from "react-notification-system";
 import { style } from "../variables/Variables";
 
 const thArr = ["ID", "Date", "Start", "End", "Actions"]; // Table Headers
+const months = [
+  "01",
+  "02",
+  "03",
+  "04",
+  "05",
+  "06",
+  "07",
+  "08",
+  "09",
+  "10",
+  "11",
+  "12",
+];
 
 // Initializing time variables
 const tomorrow = new Date();
@@ -120,8 +134,7 @@ export default class EditApts extends Component {
       console.log("start pointer: " + start_point, "end pointer: " + end_point);
 
       db.collection("Appointment")
-        .doc()
-        .set({
+        .add({
           docName: this.state.doctorName,
           doctorID: cont.currentUser.uid,
           end: new Date(end_point * 1000),
@@ -129,6 +142,21 @@ export default class EditApts extends Component {
           start: new Date(start_point * 1000),
           status: "open",
           title: "Open Appointment",
+        })
+        .then((ref) => {
+          const apt = [
+            ref.id,
+            months[when.getMonth()] +
+              "/" +
+              when.getDate() +
+              "/" +
+              when.getFullYear(),
+            start.value,
+            end.value,
+          ];
+          this.setState({
+            availableApts: this.state.availableApts.concat([apt]),
+          });
         });
 
       start_point += 3600;
@@ -170,21 +198,6 @@ export default class EditApts extends Component {
 
           const start = new Date(doc.data().start.seconds * 1000);
           const end = new Date(doc.data().end.seconds * 1000);
-
-          let months = [
-            "01",
-            "02",
-            "03",
-            "04",
-            "05",
-            "06",
-            "07",
-            "08",
-            "09",
-            "10",
-            "11",
-            "12",
-          ];
 
           const date =
             months[start.getMonth()] +
@@ -237,7 +250,7 @@ export default class EditApts extends Component {
 
   render() {
     return (
-      <div className="content" style={{ paddingTop: 50 }}>
+      <div className="content" style={{ paddingTop: 50, height: "100vh" }}>
         <Grid
           container
           cols={1}
