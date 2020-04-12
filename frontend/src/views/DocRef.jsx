@@ -5,9 +5,15 @@ import { Grid, Row, Col } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
 import { Table } from "react-bootstrap";
 import { AuthContext } from "../Auth";
-// import { db } from "../firebase";
+import { db } from "../firebase";
 
-const tableHeader = ["Patient ID", "Name", ""];
+const tableHeader = [
+  "Patient ID",
+  "Patient Name",
+  "Doctor ID",
+  "Doctor Name",
+  "Test Type",
+];
 
 export class DocRef extends Component {
   static contextType = AuthContext;
@@ -17,16 +23,77 @@ export class DocRef extends Component {
     this.state = {
       cont: this.cont,
       patients: [],
+      doctors: [],
+      open: false,
+      value: "",
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  // getPatients() {
-  //   return;
-  // }
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+  }
 
-  // componentDidMount() {
-  //   getPatients();
-  // }
+  handleSubmit(event) {
+    alert("Your favorite flavor is: " + this.state.value);
+    event.preventDefault();
+  }
+
+  getPatients() {
+    const arr = [];
+    db.collection("Users")
+      .where("role", "==", "patient")
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach((doc) => {
+          const pat = doc.data();
+
+          pat.id = doc.id;
+          pat.email = doc.data().email;
+          pat.fname = doc.data().fname;
+          pat.lname = doc.data().lname;
+          pat.role = doc.data().role;
+          pat.patientID = doc.data().uid;
+
+          arr.push(pat);
+        });
+      })
+      .then(() => {
+        this.setState({ patients: arr });
+        console.log(this.state.patients);
+      });
+  }
+
+  getDoctors() {
+    const arr = [];
+    db.collection("Users")
+      .where("role", "==", "doctor")
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach((doc) => {
+          const doctor = doc.data();
+
+          doctor.id = doc.id;
+          doctor.email = doc.data().email;
+          doctor.fname = doc.data().fname;
+          doctor.lname = doc.data().lname;
+          doctor.role = doc.data().role;
+          doctor.doctorID = doc.data().uid;
+
+          arr.push(doctor);
+        });
+      })
+      .then(() => {
+        this.setState({ doctor: arr });
+        console.log(this.state.doctor);
+      });
+  }
+
+  componentDidMount() {
+    this.getPatients();
+    this.getDoctors();
+  }
 
   render() {
     return (
@@ -48,11 +115,11 @@ export class DocRef extends Component {
       >
         <Grid>
           <Card
-            title="Patients"
+            title="Referal"
             content={
               <Table hover>
                 <thead>
-                  {["Patient ID", "Patient Name", ""].map((title, key) => {
+                  {tableHeader.map((title, key) => {
                     return <th key={key}>{title}</th>;
                   })}
                 </thead>

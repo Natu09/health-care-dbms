@@ -41,7 +41,7 @@ const Login = ({ history }) => {
 
   const { currentUser } = useContext(AuthContext);
   if (currentUser) {
-    return <Redirect to={"/patient"} />;
+    return <Redirect to={"/doctor"} />;
   }
 
   // console.log(currentUser);
