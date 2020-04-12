@@ -7,12 +7,14 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { Grid, Button } from "@material-ui/core";
-import { Row } from "react-bootstrap";
+import { Table, Row } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
-import { Table } from "react-bootstrap";
 
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
+
+import NotificationSystem from "react-notification-system";
+import { style } from "../variables/Variables";
 
 const thArr = ["ID", "Date", "Start", "End", "Actions"];
 
@@ -21,6 +23,8 @@ export default class EditApts extends Component {
 
   constructor(props) {
     super(props);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.handleAlert = this.handleAlert.bind(this);
     this.state = {
       doctorName: "",
       fname: "",
@@ -29,6 +33,7 @@ export default class EditApts extends Component {
       start: new Date(),
       end: new Date(),
       availableApts: [],
+      _notificationSystem: null,
     };
   }
 
@@ -36,10 +41,24 @@ export default class EditApts extends Component {
     this.setState({ [name]: e });
   };
 
+  handleAlert(position, level, message) {
+    this.state._notificationSystem.addNotification({
+      title: <span data-notify="icon" className="pe-7s-attention"></span>,
+      message: (
+        <div>
+          <h1>Oops!</h1>
+          <p>{message}</p>
+        </div>
+      ),
+      level: level,
+      position: position,
+      autoDismiss: 2,
+    });
+  }
+
   addAvailability = (e) => {
     e.preventDefault();
     const { date, start, end } = e.target.elements;
-    // console.log(date1.value);
     const cont = this.context;
 
     const st = date.value + " " + start.value;
@@ -51,9 +70,37 @@ export default class EditApts extends Component {
     let start_ts = Math.floor(start_t / 1000);
     let end_ts = Math.floor(end_t / 1000);
 
+    // Check if the doctor already has an availability that day
+    for (let i = 0; i < this.state.availableApts.length; i++) {
+      if (date.value === this.state.availableApts[i][1]) {
+        this.handleAlert(
+          "tc",
+          "error",
+          "Already have an availability for that day!"
+        );
+        return;
+        // return alert("Already have an availability for that day!");
+      }
+    }
+
     // Check if end time is less than start time
     if (end_ts <= start_ts) {
-      return alert("Start time cannot be greater than end time");
+      this.handleAlert(
+        "tc",
+        "error",
+        "Start time cannot be greater than end time"
+      );
+      return;
+      // return alert("Start time cannot be greater than end time");
+    }
+
+    // Check if the day is a weekend
+    const when = new Date(st);
+    const day = when.getDay();
+    if (day === 0 || day === 6) {
+      this.handleAlert("tc", "error", "Cannot Work on a weekend!");
+      return;
+      // return alert("Cannot Work on a weekend!");
     }
 
     // Cut the time range into hour time slots
@@ -155,9 +202,11 @@ export default class EditApts extends Component {
   }
 
   componentDidMount() {
-    this.getAvailableApts();
-    const cont = this.context;
+    this.getAvailableApts(); // Get all available appointments for doctor
 
+    this.setState({ _notificationSystem: this.refs.notificationSystem });
+
+    const cont = this.context;
     // Get the user lastname and set the sate of user lastname
     try {
       db.collection("Users")
@@ -286,6 +335,7 @@ export default class EditApts extends Component {
             />
           </Row>
         </Grid>
+        <NotificationSystem ref="notificationSystem" style={style} />
       </div>
     );
   }
