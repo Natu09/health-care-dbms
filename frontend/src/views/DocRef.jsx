@@ -36,7 +36,7 @@ export class DocRef extends Component {
   }
 
   handleSubmit(event) {
-    alert("Your favorite flavor is: " + this.state.value);
+    alert("Congrats your test has been booked : " + this.state.value);
     event.preventDefault();
   }
 
@@ -123,7 +123,29 @@ export class DocRef extends Component {
                     return <th key={key}>{title}</th>;
                   })}
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                  <td> ID </td>
+                  <td> Name </td>
+                  <td> ID </td>
+                  <td> Name </td>
+                  <td>
+                    <form onSubmit={this.handleSubmit}>
+                      <label>
+                        Pick Test Type:
+                        <select
+                          value={this.state.value}
+                          onChange={this.handleChange}
+                        >
+                          <option value="Ray">X-Ray</option>
+                          <option value="Blood">Blood Test</option>
+                          <option value="Eye">Eye Test</option>
+                          <option value="Bone">Bone Test</option>
+                        </select>
+                      </label>
+                      <input type="submit" value="Submit" />
+                    </form>
+                  </td>
+                </tbody>
               </Table>
             }
           />
