@@ -87,7 +87,7 @@ export default () => {
 
                     console.log("Time Conflict:", isConflict);
 
-                    if(isConflict == true){
+                    if(isConflict == true && doc.id != info.event.id){
                       document.getElementById("buttonBook").style.visibility = "hidden";
                       document.getElementById("modal-description").innerHTML =
                       ' <DialogContentText  id="modal-description">' +
