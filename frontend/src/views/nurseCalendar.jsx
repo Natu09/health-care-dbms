@@ -127,13 +127,14 @@ export default () => {
    * Retrieves all events related to the doctos
    */
   function getEvents() {
-    const docApt = [];
+    let docApt = [];
 
-    var queryNurse = db.collection("Users").doc(currentUser.uid);
-    queryNurse.get().then(function (nurse) {
+    const queryNurse = db.collection("Users").doc(currentUser.uid);
+
+    queryNurse.get().then((nurse) => {
       const docList = nurse.data().docList;
       docList.forEach((docID) => {
-        var queryDoctor = db
+        let queryDoctor = db
           .collection("Appointment")
           .where("doctorID", "==", docID);
         queryDoctor
@@ -142,17 +143,9 @@ export default () => {
             querySnapshot.forEach((appointment) => {
               // Reformating time format for full calendar event
 
-              // Seting the Unix time
-              const epochStart = appointment.data().start.seconds;
-              const epochEnd = appointment.data().end.seconds;
-
               // Initilizing new Date objets
-              let start = new Date(0);
-              let end = new Date(0);
-
-              // Set date object times to Unix time from event object
-              start.setUTCSeconds(epochStart);
-              end.setUTCSeconds(epochEnd);
+              let start = new Date(appointment.data().start.seconds * 1000);
+              let end = new Date(appointment.data().end.seconds * 1000);
 
               const event = appointment.data();
               event.start = start;
@@ -160,19 +153,24 @@ export default () => {
               event.id = appointment.id;
 
               // Set the event colour depending on its status
-              if (appointment.data().status === "booked") {
-                event.color = "blue"; // Blue
-              } else if (appointment.data().status === "pending") {
-                event.color = "orange"; // Yellow
-              } else if (appointment.data().status === "open") {
-                event.color = "green";
+              switch (appointment.data().status) {
+                case "booked":
+                  event.color = "blue"; // Blue
+                  break;
+                case "pending":
+                  event.color = "orange"; // Yellow
+                  break;
+                default:
+                  event.color = "green";
+                  break;
               }
 
               docApt.push(event);
             });
           })
           .then(() => {
-            setEvents(docApt);
+            setEvents(events.concat(docApt));
+            console.log(events);
           });
       });
     });
