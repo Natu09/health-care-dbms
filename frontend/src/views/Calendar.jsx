@@ -134,6 +134,15 @@ export default () => {
             doc.data().status === "booked" ||
             doc.data().status === "pending"
           ) {
+
+            // const currentDay = new Date();
+            console.log("current date", new Date()/1000);
+            console.log("event start", doc.data().start);
+            console.log("time to", doc.data().start -  new Date()/1000);
+            
+            if ( doc.data().start - new Date()/1000 < 24*60*60){
+              window.alert("There is less than 24 hrs to this appointment. If you cancel now there will be a financial penalty");
+            }
             query.update({
               status: "open",
               patientID: "N/A",
@@ -245,6 +254,7 @@ export default () => {
             right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
           }}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          timeZone={'local'}
           handleWindowResize={true}
           events={events}
           editable={false}
