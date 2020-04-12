@@ -33,6 +33,7 @@ const App = () => {
           <PrivateRoute exact path="/doctor" component={Doctor} />
           <PrivateRoute exact path="/docCalendar" component={Doctor} />
           <PrivateRoute exact path="/editApts" component={Doctor} />
+          <PrivateRoute exact path="/docReferrals" component={Doctor} />
           {/* ALL THE PRIVATE ROUTES FOR A NURSE */}
           <PrivateRoute exact path="/nurse" component={Nurse} />
         </div>
