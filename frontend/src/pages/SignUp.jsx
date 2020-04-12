@@ -23,6 +23,7 @@ const SignUp = ({ history }) => {
               fname: Fname.value,
               lname: Lname.value,
               email: email.value,
+              uid: cred.user.uid
             });
           });
         history.push("/patient");
