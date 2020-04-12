@@ -16,7 +16,13 @@ import { db } from "../firebase";
 import NotificationSystem from "react-notification-system";
 import { style } from "../variables/Variables";
 
-const thArr = ["ID", "Date", "Start", "End", "Actions"];
+const thArr = ["ID", "Date", "Start", "End", "Actions"]; // Table Headers
+
+// Initializing time variables
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1); // Add 1 day
+tomorrow.setHours(9); // Set to opening time of clinic
+tomorrow.setMinutes(0);
 
 export default class EditApts extends Component {
   static contextType = AuthContext;
@@ -29,9 +35,9 @@ export default class EditApts extends Component {
       doctorName: "",
       fname: "",
       lname: "",
-      date: new Date(),
-      start: new Date(),
-      end: new Date(),
+      date: tomorrow,
+      start: tomorrow,
+      end: tomorrow,
       availableApts: [],
       _notificationSystem: null,
     };
@@ -42,8 +48,11 @@ export default class EditApts extends Component {
   };
 
   handleAlert(position, level, message) {
+    const logo = level === "error" ? "pe-7s-attention" : "pe-7s-like2";
+    const title = level === "error" ? "Oops!" : "Yay!";
+
     this.state._notificationSystem.addNotification({
-      title: <span data-notify="icon" className="pe-7s-attention"></span>,
+      title: <span data-notify="icon" className={logo}></span>,
       message: (
         <div>
           <h1>Oops!</h1>
@@ -125,6 +134,8 @@ export default class EditApts extends Component {
       start_point += 3600;
       end_point += 3600;
     }
+
+    this.handleAlert("tc", "success", "Successfully added availability!");
   };
 
   deleteApt = (i) => {
@@ -250,6 +261,7 @@ export default class EditApts extends Component {
                       margin="normal"
                       id="date-picker-inline"
                       label="Date"
+                      minDate={tomorrow}
                       value={this.state.date}
                       onChange={this.handleChange("date")}
                       KeyboardButtonProps={{
@@ -264,6 +276,7 @@ export default class EditApts extends Component {
                       margin="normal"
                       id="time-picker"
                       label="Start Time"
+                      views={["hours"]}
                       value={this.state.start}
                       onChange={this.handleChange("start")}
                       KeyboardButtonProps={{
@@ -278,6 +291,7 @@ export default class EditApts extends Component {
                       margin="normal"
                       id="time-picker"
                       label="End Time"
+                      views={["hours"]}
                       value={this.state.end}
                       onChange={this.handleChange("end")}
                       KeyboardButtonProps={{
