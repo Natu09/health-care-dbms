@@ -128,94 +128,52 @@ export default () => {
     setTemp({});
   };
 
-  /**
-   * Retrieves all events related to the doctos
-   */
+
+
+  function createEvent(appointmentData, id){
+    const event = appointmentData;
+    event.start = new Date(0)
+        .setUTCSeconds(appointmentData.start.seconds);
+    event.end = new Date(0)
+      .setUTCSeconds(appointmentData.end.seconds);
+    event.id = id;
+    event.docName = "Dr. " + event.docName;
+
+    switch (event.status) {
+      case "booked":
+        event.color = "blue"; // Blue
+        break;
+      case "pending":
+        event.color = "orange"; // Yellow
+        break;
+      default:
+        event.color = "green";
+        break;
+    }
+    return event;
+  }
+
   function getEvents() {
     const docApt = [];
-    // console.log(currentUser.uid)
-    var query1 = db.collection("Appointment").where("status", "==", "open");
-    var query2 = db
-      .collection("Appointment")
-      .where("patientID", "==", currentUser.uid);
 
-    query1.get().then(function (querySnapshot) {
-      querySnapshot.forEach((doc) => {
-        // Reformating time format for full calendar event
+    var openAppointments = db.collection("Appointment").where("status", "==", "open");
+    var patientAppointments = db.collection("Appointment").where("patientID", "==", currentUser.uid);
 
-        // Seting the Unix time
-        const epochStart = doc.data().start.seconds;
-        const epochEnd = doc.data().end.seconds;
-
-        // Initilizing new Date objets
-        let start = new Date(0);
-        let end = new Date(0);
-
-        // Set date object times to Unix time from event object
-        start.setUTCSeconds(epochStart);
-        end.setUTCSeconds(epochEnd);
-
-        const event = doc.data();
-        let doctorName = doc.data().docName;
-        event.start = start;
-        event.end = end;
-        event.id = doc.id;
-        event.docName = "Dr. " + doctorName;
-        event.title = doc.data().title;
-
-        // Set apt colour here
-        if (doc.data().status === "pending") {
-          event.color = "orange ";
-        } else if (doc.data().status === "booked") {
-          event.color = "blue";
-        } else {
-          event.color = "green";
-        }
-
-        docApt.push(event);
+    openAppointments.get().then( function (querySnapshot) {
+      querySnapshot.forEach((appointment) => {
+        let calEvent = createEvent(appointment.data(), appointment.id)
+        docApt.push(calEvent);
       });
     });
-    query2
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach((doc) => {
-          // Reformating time format for full calendar event
 
-          // Seting the Unix time
-          const epochStart = doc.data().start.seconds;
-          const epochEnd = doc.data().end.seconds;
-
-          // Initilizing new Date objets
-          let start = new Date(0);
-          let end = new Date(0);
-
-          // Set date object times to Unix time from event object
-          start.setUTCSeconds(epochStart);
-          end.setUTCSeconds(epochEnd);
-
-          const event = doc.data();
-          let doctorName = doc.data().docName;
-          event.start = start;
-          event.end = end;
-          event.id = doc.id;
-          event.docName = "Dr. " + doctorName;
-          event.title = doc.data().title;
-
-          // Set apt colour here
-          if (doc.data().status === "pending") {
-            event.color = "orange ";
-          } else if (doc.data().status === "booked") {
-            event.color = "blue";
-          } else {
-            event.color = "green";
-          }
-
-          docApt.push(event);
-        });
-      })
-      .then(() => {
-        setEvents(docApt);
+    patientAppointments.get().then( function (querySnapshot) {
+      querySnapshot.forEach((appointment) => {
+        let calEvent = createEvent(appointment.data(), appointment.id)
+        docApt.push(calEvent);
       });
+    }).then( () => {
+      setEvents(docApt);
+    });
   }
 
   useEffect(() => {
