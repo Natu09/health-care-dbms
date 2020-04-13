@@ -110,7 +110,7 @@ const Login = ({ history }) => {
             </button>
           </form>
           <p align="center" style={{ padding: 20 }}>
-            Are you a new user? <a href="signup">Create an account</a>
+            Are you a new user? <a href="/">Create an account</a>
           </p>
         </div>
       </div>
