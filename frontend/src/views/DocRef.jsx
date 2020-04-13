@@ -4,7 +4,6 @@ import React, { Component } from "react";
 import {
   Grid,
   Row,
-  Col,
   Button,
   FormGroup,
   ControlLabel,
@@ -96,7 +95,7 @@ export class DocRef extends Component {
     for (let i = 0; i < this.state.docRefs.length; i++) {
       if (
         this.state.test === this.state.docRefs[i].type &&
-        this.state.test === this.state.docRefs[i].patientID
+        this.state.patient === this.state.docRefs[i].patientID
       ) {
         this.handleAlert("tc", "error", "Patient already has that reference!");
         return;
