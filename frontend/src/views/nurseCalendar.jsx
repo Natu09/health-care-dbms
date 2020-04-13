@@ -59,6 +59,28 @@ export default () => {
       "<h5>" +
       "</DialogContentText>";
 
+      let patientQuery = db.collection("Users").doc(info.event.extendedProps.patientID);
+      patientQuery.get()
+      .then(function (user) {
+        if (user.exists){
+          document.getElementById("patient-name").innerHTML =
+          ' <DialogContentText  id="patient-name">' +
+          "<h5>" +
+          "Patient: " +
+          user.data().fname + " " + user.data().lname +
+          "<h5>" +
+          "</DialogContentText>";
+        } else {
+          document.getElementById("patient-name").innerHTML =
+          ' <DialogContentText  id="patient-name">' +
+          "<h5>" +
+          "Patient: " +
+          "NA" +
+          "<h5>" +
+          "</DialogContentText>";
+        }
+      });
+
     document.getElementById("start-time").innerHTML =
       ' <DialogContentText  id="start-time">' +
       "<h5>" +
@@ -258,6 +280,9 @@ export default () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="doctor-name">
+            Appointment Content goes here
+          </DialogContentText>
+          <DialogContentText id="patient-name">
             Appointment Content goes here
           </DialogContentText>
           <DialogContentText id="start-time">
