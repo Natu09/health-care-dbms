@@ -185,7 +185,7 @@ export default class EditApts extends Component {
             docName: this.state.doctorName,
             doctorID: cont.currentUser.uid,
             end: new_end,
-            patientID: "",
+            patientID: "NA",
             start: new_start,
             status: "open",
             title: "Open Appointment",
