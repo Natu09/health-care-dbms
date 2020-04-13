@@ -9,6 +9,8 @@ import "@fullcalendar/daygrid/main.css";
 import "@fullcalendar/timegrid/main.css";
 import "@fullcalendar/list/main.css";
 
+import { Grid } from "react-bootstrap";
+
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
@@ -22,11 +24,11 @@ export default function DocCalendar(props) {
     header: {
       left: "prev,next today",
       center: "title",
-      right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+      right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
     },
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     eventColor: "#378006", // Greenish
-    displayEventEnd: true
+    displayEventEnd: true,
   };
 
   /**
@@ -38,8 +40,8 @@ export default function DocCalendar(props) {
     db.collection("Appointment")
       .where("doctorID", "==", currentUser.uid)
       .get()
-      .then(function(querySnapshot) {
-        querySnapshot.forEach(doc => {
+      .then(function (querySnapshot) {
+        querySnapshot.forEach((doc) => {
           // Reformating time format for full calendar event
 
           // Seting the Unix time
@@ -74,8 +76,10 @@ export default function DocCalendar(props) {
 
   // Render view
   return (
-    <div className="calendar">
-      <FullCalendar {...options} events={events} />
+    <div className="content">
+      <div className="calendar" style={{ paddingTop: 10 }}>
+        <FullCalendar {...options} events={events} />
+      </div>
     </div>
   );
 }
