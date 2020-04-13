@@ -70,6 +70,14 @@ export default () => {
           user.data().fname + " " + user.data().lname +
           "<h5>" +
           "</DialogContentText>";
+        } else {
+          document.getElementById("patient-name").innerHTML =
+          ' <DialogContentText  id="patient-name">' +
+          "<h5>" +
+          "Patient: " +
+          "NA" +
+          "<h5>" +
+          "</DialogContentText>";
         }
       });
 
