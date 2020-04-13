@@ -3,13 +3,13 @@ import { NavLink } from "react-router-dom";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
-import logo from "assets/img/reactlogo.png";
+import logo from "assets/img/hs_logo.png";
 
 class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: window.innerWidth
+      width: window.innerWidth,
     };
   }
 
@@ -28,7 +28,7 @@ class Sidebar extends Component {
 
   render() {
     const sidebarBackground = {
-      backgroundImage: "url(" + this.props.image + ")"
+      backgroundImage: "url(" + this.props.image + ")",
     };
 
     return (
@@ -42,20 +42,12 @@ class Sidebar extends Component {
           <div className="sidebar-background" style={sidebarBackground} />
         ) : null}
         <div className="logo">
-          <a
-            href="https://github.com/Natu09/health-care-dbms"
-            className="simple-text logo-mini"
-          >
+          <a className="simple-text logo-mini">
             <div className="logo-img">
               <img src={logo} alt="logo_image" />
             </div>
           </a>
-          <a
-            href="https://github.com/Natu09/health-care-dbms"
-            className="simple-text logo-normal"
-          >
-            AHS System
-          </a>
+          <a className="simple-text logo-normal">AHS System</a>
         </div>
         <div className="sidebar-wrapper">
           <ul className="nav">

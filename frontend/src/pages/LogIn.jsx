@@ -46,11 +46,13 @@ const Login = ({ history }) => {
 
   // if the current users role is patient then redirect to patient
   // if (currentUser) {
-  //   let query = db.collection("Users").where("uid", "==", currentUser.uid);
-
-  //   let role = query.get().then(function (doc) {
-  //     return doc.data().role;
-  //   });
+  //   let role = db
+  //     .collection("Users")
+  //     .where("uid", "==", currentUser.uid)
+  //     .get()
+  //     .then(function (doc) {
+  //       return doc.data().role;
+  //     });
 
   //   console.log(role);
   //   return <Redirect to={"/" + role} />;

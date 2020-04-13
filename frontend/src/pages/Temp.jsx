@@ -1,5 +1,5 @@
 import React from "react";
-import Test from "../views/EditApts";
+import Test from "../views/DocRef";
 
 export default function Temp() {
   return (
