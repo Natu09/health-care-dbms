@@ -24,7 +24,7 @@ const App = () => {
       <BrowserRouter>
         <div>
           <Route exact path="/test" component={Temp} />
-          <Route exact path="/" component={HomePage} />
+          {/* <Route exact path="/" component={HomePage} /> */}
           <Route exact path="/login" component={LogInPage} />
           <Route exact path="/" component={SignUpPage} />
           {/* ALL THE PRIVATE ROUTES FOR A PATIENT */}
