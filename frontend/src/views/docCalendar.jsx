@@ -55,14 +55,32 @@ export default function DocCalendar(props) {
     console.log(e.event);
     const modalStart = new Date(e.event.start);
     const modalEnd = new Date(e.event.end);
-    setChosenEvent({
-      status: e.event.extendedProps.status,
-      patientID: e.event.extendedProps.patientID,
-      date: modalStart.toDateString(),
-      start: modalStart.toLocaleTimeString(),
-      end: modalEnd.toLocaleTimeString(),
+
+    console.log("patiendID", e.event.extendedProps.patientID);
+    let patientQuery = db.collection("Users").doc(e.event.extendedProps.patientID);
+    patientQuery.get()
+    .then(function (user) {
+      if (user.exists){
+        console.log("test", e.event.extendedProps.patientID);
+        setChosenEvent({
+          status: e.event.extendedProps.status,
+          patientID: user.data().fname + " " + user.data().lname,
+          date: modalStart.toDateString(),
+          start: modalStart.toLocaleTimeString(),
+          end: modalEnd.toLocaleTimeString(),
+        });
+      } else {
+        setChosenEvent({
+          status: e.event.extendedProps.status,
+          patientID: e.event.extendedProps.patientID,
+          date: modalStart.toDateString(),
+          start: modalStart.toLocaleTimeString(),
+          end: modalEnd.toLocaleTimeString(),
+          // user.data().fname + " " + user.data().lname,
+        });
+      }
+      setShow(true);
     });
-    setShow(true);
   }
 
   /**

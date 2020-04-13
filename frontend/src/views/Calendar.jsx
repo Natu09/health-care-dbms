@@ -74,9 +74,8 @@ export default () => {
       "<h5>" +
       "</DialogContentText>";
 
-    //console.log(info.event.start.getTime());
-    var eventST = info.event.start.getTime();
-    var eventET = info.event.end.getTime();
+      var eventST = info.event.start.getTime();
+      var eventET = info.event.end.getTime();
 
     var queryTime = db
       .collection("Appointment")
@@ -112,7 +111,6 @@ export default () => {
     ) {
       document.getElementById("buttonBook").style.visibility = "hidden";
     }
-
     setTemp(info.event);
   };
 
@@ -131,11 +129,11 @@ export default () => {
       .then(function (doc) {
         if (doc.exists) {
           if (doc.data().status === "open") {
-            query.update({
-              status: "pending",
-              patientID: currentUser.uid,
-              title: "Pending - " + doc.data().docName,
-            });
+              query.update({
+                status: "pending",
+                patientID: currentUser.uid,
+                title: "Pending - " + doc.data().docName,
+              });
           }
         }
       })
@@ -145,6 +143,7 @@ export default () => {
       });
     setTemp({});
   };
+
 
   /**
    * The handleCancel function will be used when a user clicks to cancel the
@@ -170,14 +169,15 @@ export default () => {
               if (window.confirm(cancelWarning)){
                 query.update({
                   status: "open",
-                  patientID: "N/A",
+                  patientID: "NA",
+                  patientName: "NA",
                   title: "Open - " + doc.data().docName,
                 });
               }
             } else {
               query.update({
                 status: "open",
-                patientID: "N/A",
+                patientID: "NA",
                 title: "Open - " + doc.data().docName,
               });
             }
