@@ -83,9 +83,19 @@ export default function DocCalendar(props) {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach((doc) => {
+          // Reformating time format for full calendar event
+
+          // Seting the Unix time
+          const epochStart = doc.data().start.seconds;
+          const epochEnd = doc.data().end.seconds;
+
           // Initilizing new Date objets
-          let start = new Date(doc.data().start.seconds * 1000);
-          let end = new Date(doc.data().end.seconds * 1000);
+          let start = new Date(0);
+          let end = new Date(0);
+
+          // Set date object times to Unix time from event object
+          start.setUTCSeconds(epochStart);
+          end.setUTCSeconds(epochEnd);
 
           const event = doc.data();
           event.start = start;
@@ -117,8 +127,10 @@ export default function DocCalendar(props) {
 
   // Render view
   return (
-    <div className="calendar">
-      <FullCalendar {...options} events={events} eventClick={showModal} />
+    <div className="content">
+      <div className="calendar" style={{ paddingTop: 10 }}>
+        <FullCalendar {...options} events={events} eventClick={showModal} />
+      </div>
 
       <Modal show={show} onHide={closeModal}>
         <Modal.Header closeButton>

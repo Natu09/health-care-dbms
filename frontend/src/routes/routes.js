@@ -1,6 +1,6 @@
 import UserProfile from "views/UserProfile.jsx";
 import Calendar from "views/Calendar.jsx";
-import Reference from "views/Reference.jsx";
+import Referrals from "views/Reference.jsx";
 
 const dashboardRoutes = [
   {
@@ -18,10 +18,10 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/reference",
-    name: "Reference",
+    path: "/Referrals",
+    name: "Referrals",
     icon: "pe-7s-note2",
-    component: Reference,
+    component: Referrals,
     layout: "/admin",
   },
 ];
