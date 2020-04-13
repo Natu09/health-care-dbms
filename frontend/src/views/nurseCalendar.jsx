@@ -59,6 +59,8 @@ export default () => {
       "<h5>" +
       "</DialogContentText>";
 
+      // Display the Patient Name if it is booked
+      // Otherwise dispaly NA
       let patientQuery = db.collection("Users").doc(info.event.extendedProps.patientID);
       patientQuery.get()
       .then(function (user) {
@@ -97,6 +99,7 @@ export default () => {
       "<h5>" +
       "</DialogContentText>";
 
+      // Hide the buttons to cancel or book if it is an open appointment
     if (info.event.extendedProps.status === "open") {
       document.getElementById("buttonCancel").style.visibility = "hidden";
       document.getElementById("buttonBook").style.visibility = "hidden";

@@ -103,6 +103,7 @@ export default () => {
       });
     });
 
+      // Hide buttons as needed
     if (info.event.extendedProps.status === "open") {
       document.getElementById("buttonCancel").style.visibility = "hidden";
     } else if (
@@ -211,6 +212,14 @@ export default () => {
     }
   }
 
+  /**
+   * Takes in appointment data from the database and formats it for the calendar
+   * @author: Seng Group 40
+   * @param appointmentData An appointment data from Firebase
+   * @param id The id of the appointment
+   * @return An array formated for the calendar
+   * 
+   */
   function createCalendarEvent(appointmentData, id) {
     const event = appointmentData;
     event.start = new Date(0).setUTCSeconds(appointmentData.start.seconds);
