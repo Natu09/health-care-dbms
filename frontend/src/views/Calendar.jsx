@@ -164,11 +164,23 @@ export default () => {
             doc.data().status === "booked" ||
             doc.data().status === "pending"
           ) {
-            query.update({
-              status: "open",
-              patientID: "N/A",
-              title: "Open - " + doc.data().docName,
-            });
+           
+            const cancelWarning = "There is less than 24 hrs to this appointment. If you cancel now there will be a financial penalty. Do you want to continue?";
+            if ( doc.data().start.seconds - Date.now()/1000 < 24*60*60){
+              if (window.confirm(cancelWarning)){
+                query.update({
+                  status: "open",
+                  patientID: "N/A",
+                  title: "Open - " + doc.data().docName,
+                });
+              }
+            } else {
+              query.update({
+                status: "open",
+                patientID: "N/A",
+                title: "Open - " + doc.data().docName,
+              });
+            }
           }
         }
       })
@@ -276,6 +288,7 @@ export default () => {
             right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
           }}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          timeZone={'local'}
           handleWindowResize={true}
           events={events}
           editable={false}
