@@ -134,27 +134,23 @@ export default () => {
             doc.data().status === "booked" ||
             doc.data().status === "pending"
           ) {
-
-            // const currentDay = new Date();
-            console.log("current date", new Date()/1000);
-            console.log("event start", doc.data().start);
-            console.log("time to", doc.data().start -  new Date()/1000);
-            
+           
             const cancelWarning = "There is less than 24 hrs to this appointment. If you cancel now there will be a financial penalty. Do you want to continue?";
-            if ( doc.data().start - new Date()/1000 < 24*60*60){
-              if (window.alert(cancelWarning)){
+            if ( doc.data().start.seconds - Date.now()/1000 < 24*60*60){
+              if (window.confirm(cancelWarning)){
                 query.update({
                   status: "open",
                   patientID: "N/A",
                   title: "Open - " + doc.data().docName,
                 });
               }
+            } else {
+              query.update({
+                status: "open",
+                patientID: "N/A",
+                title: "Open - " + doc.data().docName,
+              });
             }
-            query.update({
-              status: "open",
-              patientID: "N/A",
-              title: "Open - " + doc.data().docName,
-            });
           }
         }
       })
