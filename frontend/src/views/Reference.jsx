@@ -35,7 +35,7 @@ export default class Referals extends Component {
   }
 
   handleSubmit(event) {
-    alert("Your favorite flavor is: " + this.state.value);
+    alert("Your test is booked: " + this.state.value);
     event.preventDefault();
   }
 
@@ -150,16 +150,10 @@ export default class Referals extends Component {
                                 value={this.state.value}
                                 onChange={this.handleChange}
                               >
-                                {console.log(refs.apts)}
-                                <option value="lime">Lime</option>
-                                {refs.apts.forEach((a) => {
-                                  console.log(a);
-                                })}
-
-                                {/* <option value="grapefruit">Grapefruit</option>
-                                <option value="lime">Lime</option>
-                                <option value="coconut">Coconut</option>
-                                <option value="mango">Mango</option> */}
+                                <option value="grapefruit">Bone Scan</option>
+                                <option value="lime">Blood Test</option>
+                                <option value="coconut">Eye Test</option>
+                                <option value="mango">X Ray</option>
                               </select>
                             </label>
                             <input type="submit" value="Submit" />
