@@ -84,7 +84,7 @@ export default () => {
 
     setTemp(info.event);
   };
-  
+
   /**
    * The handleBook function will be used when a user clicks to book the
    * appointment. When the button is clicked, the events and firebase db
@@ -134,7 +134,7 @@ export default () => {
           ) {
             query.update({
               status: "open",
-              patientID: "N/A",
+              patientID: "NA",
               title: "Open - " + doc.data().docName,
             });
           }
