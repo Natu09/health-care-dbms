@@ -291,7 +291,7 @@ export class DocRef extends Component {
           </Row>
           <Row>
             <Card
-              title="Partien References"
+              title="Patient References"
               content={
                 <Table>
                   <thead variant="dark">
