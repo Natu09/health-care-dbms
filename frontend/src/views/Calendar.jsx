@@ -74,31 +74,35 @@ export default () => {
       "<h5>" +
       "</DialogContentText>";
 
-      //console.log(info.event.start.getTime());
-      var eventST = info.event.start.getTime();
-      var eventET = info.event.end.getTime();
+    //console.log(info.event.start.getTime());
+    var eventST = info.event.start.getTime();
+    var eventET = info.event.end.getTime();
 
-      var queryTime = db.collection("Appointment").where("patientID", "==", currentUser.uid);
-      queryTime.get()
-                .then(function(querySnapshot){
-                  querySnapshot.forEach(function(doc){
-                    var isConflict = checkConflict(eventST, eventET,
-                      new Date(0).setUTCSeconds(doc.data().start.seconds), new Date(0).setUTCSeconds(doc.data().end.seconds))
+    var queryTime = db
+      .collection("Appointment")
+      .where("patientID", "==", currentUser.uid);
+    queryTime.get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        var isConflict = checkConflict(
+          eventST,
+          eventET,
+          new Date(0).setUTCSeconds(doc.data().start.seconds),
+          new Date(0).setUTCSeconds(doc.data().end.seconds)
+        );
 
-                    console.log("Time Conflict:", isConflict);
+        console.log("Time Conflict:", isConflict);
 
-                    if(isConflict == true && doc.id != info.event.id){
-                      document.getElementById("buttonBook").style.visibility = "hidden";
-                      document.getElementById("modal-description").innerHTML =
-                      ' <DialogContentText  id="modal-description">' +
-                      "<h5>" +
-                      "Appointment cannot be booked because of a conflict with another appointment" + 
-                      "<h5>" +
-                      "</DialogContentText>";
-                    }
-
-                  })
-                });
+        if (isConflict === true && doc.id !== info.event.id) {
+          document.getElementById("buttonBook").style.visibility = "hidden";
+          document.getElementById("modal-description").innerHTML =
+            ' <DialogContentText  id="modal-description">' +
+            "<h5>" +
+            "Appointment cannot be booked because of a conflict with another appointment" +
+            "<h5>" +
+            "</DialogContentText>";
+        }
+      });
+    });
 
     if (info.event.extendedProps.status === "open") {
       document.getElementById("buttonCancel").style.visibility = "hidden";
@@ -185,17 +189,17 @@ export default () => {
     setTemp({});
   };
 
-  function checkConflict(EST, EET, PST, PET){
-    if(PST < EST && PET < EST){
+  function checkConflict(EST, EET, PST, PET) {
+    if (PST < EST && PET < EST) {
       return false;
-    }else if(PST> EET){
+    } else if (PST > EET) {
       return false;
-    }else{
+    } else {
       return true;
     }
   }
 
-  function createCalendarEvent(appointmentData, id){
+  function createCalendarEvent(appointmentData, id) {
     const event = appointmentData;
     event.start = new Date(0).setUTCSeconds(appointmentData.start.seconds);
     event.end = new Date(0).setUTCSeconds(appointmentData.end.seconds);
@@ -296,8 +300,7 @@ export default () => {
           <DialogContentText id="end-time">
             Appointment Content goes here
           </DialogContentText>
-          <DialogContentText id="modal-description">
-          </DialogContentText>
+          <DialogContentText id="modal-description"></DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button

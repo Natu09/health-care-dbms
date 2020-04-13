@@ -39,7 +39,7 @@ const Login = ({ history }) => {
     [history]
   );
 
-  const { currentUser } = useContext(AuthContext);
+  // const { currentUser } = useContext(AuthContext);
   // console.log(currentUser);
 
   // console.log(db.collection("Users").doc(currentUser.uid));
