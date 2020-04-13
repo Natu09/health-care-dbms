@@ -9,9 +9,13 @@ https://nodejs.org/en/
 
 `npm i`
 
-### To run application
+### To run the application locally
 
 `npm start`
+
+### Access the login page
+Make sure that the url displays <br /> 
+`localhost:3000/login`
 
 # Patient View
 ## Signup Information
