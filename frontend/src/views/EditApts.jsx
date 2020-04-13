@@ -41,7 +41,10 @@ tomorrow.setHours(9); // Set to opening time of clinic as 9 am
 tomorrow.setMinutes(0);
 
 /**
- * View page for Doctors to show their
+ * View page where doctors can add, edit, and delete
+ * current open appointments they currently have
+ *
+ * @author Justin Flores
  */
 export default class EditApts extends Component {
   static contextType = AuthContext; // Context used for
@@ -57,15 +60,29 @@ export default class EditApts extends Component {
       date: tomorrow, // chosen date
       start: tomorrow, // chosen start time
       end: tomorrow, // chosen end time
-      availableApts: [],
+      availableApts: [], // All available appointments for the doctor
       _notificationSystem: null,
     };
   }
 
+  /**
+   * Change a state variable when user changes content
+   * in input fields
+   *
+   * @param {string} name of state field to be modified
+   * @param {event object} e an html element representing an input field
+   */
   handleChange = (name) => (e) => {
     this.setState({ [name]: e });
   };
 
+  /**
+   * Show an alert after the user add an new availability
+   *
+   * @param {string} position where the alert is pop-up
+   * @param {string} level    the type of alert
+   * @param {string} message  message in  the aler
+   */
   handleAlert(position, level, message) {
     const logo = level === "error" ? "pe-7s-attention" : "pe-7s-like2";
     const title = level === "error" ? "Oops!" : "Yay!";
@@ -84,6 +101,10 @@ export default class EditApts extends Component {
     });
   }
 
+  /**
+   *
+   * @param {event object} e an html element representing an input field
+   */
   addAvailability = (e) => {
     e.preventDefault();
     const { date, start, end } = e.target.elements;
@@ -97,7 +118,11 @@ export default class EditApts extends Component {
 
     let sameDate = false;
 
-    // Check if the doctor already has an availability that day
+    /**
+     *  Check if the doctor already has an appointment for that day
+     *  so that it will check of the new hour slots will overlap
+     *  with the current ones
+     */
     for (let i = 0; i < this.state.availableApts.length; i++) {
       if (date.value === this.state.availableApts[i][1]) sameDate = true;
     }
@@ -120,7 +145,7 @@ export default class EditApts extends Component {
       return;
     }
 
-    // Cut the time range into hour time slots
+    // Cut the time range into hour time slots and add them to the DB as open appointments
     let start_point = start_t;
     let end_point = start_t + 3600000;
 
@@ -128,6 +153,7 @@ export default class EditApts extends Component {
       let add = true;
       console.log("start pointer: " + start_point, "end pointer: " + end_point);
       if (sameDate) {
+        // Check for other overlapping appointment slots
         for (let i = 0; i < this.state.availableApts.length; i++) {
           if (date.value === this.state.availableApts[i][1]) {
             let temp1 = +new Date(
@@ -149,6 +175,7 @@ export default class EditApts extends Component {
         }
       }
 
+      // Adding new hour slot to the database
       if (add) {
         console.log("Added this");
         const new_start = new Date(start_point);
@@ -164,6 +191,7 @@ export default class EditApts extends Component {
             title: "Open Appointment",
           })
           .then((ref) => {
+            // Add new hour slots to the table by updating state variable
             const apt = [
               ref.id,
               months[new_start.getMonth()] +
@@ -194,10 +222,17 @@ export default class EditApts extends Component {
     this.handleAlert("tc", "success", "Successfully added availability!");
   };
 
+  /**
+   * Delete appointment from the DB and remove it
+   * from the table
+   *
+   * @param {int} i the index of the appointment to be deleted
+   */
   deleteApt = (i) => {
     console.log(this.state.availableApts);
     console.log(this.state.availableApts[i][0]);
 
+    // Remove from the DB
     db.collection("Appointment")
       .doc(this.state.availableApts[i][0])
       .delete()
@@ -208,11 +243,15 @@ export default class EditApts extends Component {
         console.error("Error removing document: ", error);
       });
 
+    // Remove from the table
     this.setState((state) => ({
       availableApts: state.availableApts.filter((row, j) => j !== i),
     }));
   };
 
+  /**
+   * Get all open appointment slots for the doctor
+   */
   getAvailableApts() {
     const cont = this.context;
     const apts = [];
@@ -264,10 +303,10 @@ export default class EditApts extends Component {
   componentDidMount() {
     this.getAvailableApts(); // Get all available appointments for doctor
 
-    this.setState({ _notificationSystem: this.refs.notificationSystem });
+    this.setState({ _notificationSystem: this.refs.notificationSystem }); // Initialize the notification system
 
     const cont = this.context;
-    // Get the user lastname and set the sate of user lastname
+    // Retrieve the full name ofthe doctor
     try {
       db.collection("Users")
         .doc(cont.currentUser.uid)
