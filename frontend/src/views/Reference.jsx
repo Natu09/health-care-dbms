@@ -150,10 +150,10 @@ export default class Referals extends Component {
                                 value={this.state.value}
                                 onChange={this.handleChange}
                               >
-                                <option value="grapefruit">Bone Scan</option>
-                                <option value="lime">Blood Test</option>
-                                <option value="coconut">Eye Test</option>
-                                <option value="mango">X Ray</option>
+                                <option value="Bone Scan">Bone Scan</option>
+                                <option value="Blood Test">Blood Test</option>
+                                <option value="Eye Test">Eye Test</option>
+                                <option value="X Ray">X Ray</option>
                               </select>
                             </label>
                             <input type="submit" value="Submit" />
