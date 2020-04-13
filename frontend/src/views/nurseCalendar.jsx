@@ -1,4 +1,18 @@
+/*
+ * This file creates the Calendar that can be viewed and interacted with
+ * by the Nurses
+ */
+
+// Importing the required libraries
 import React, { useEffect, useState, useContext } from "react";
+
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -12,105 +26,274 @@ import "@fullcalendar/list/main.css";
 import { AuthContext } from "../Auth";
 import { db } from "../firebase";
 
-export default function NurseCalendar(props) {
-  const { currentUser } = useContext(AuthContext);
-  const [events, setEvents] = useState([]);
+export default () => {
+  // Intializing state variables
+  const { currentUser } = useContext(AuthContext);  // Gets the id of the nurse signed in
+  const [events, setEvents] = useState([]);         
+  const [open, setOpen] = React.useState(false);
+  const [temp, setTemp] = useState({});
 
-  /// Options for the calendar component
-  const options = {
-    defaultView: "dayGridMonth",
-    header: {
-      left: "prev,next today",
-      center: "title",
-      right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-    },
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    eventColor: "#378006", // Greenish
-    displayEventEnd: true,
-    eventClick: handleEventClick,
+  /**
+   * The handleClickOpen function will display a modal when the user
+   * clicks on an appointment. This modal will also condtionally render
+   * a cancel and book appointment button when required, and will hide them
+   * when not required. This function does not return anything but updates the
+   * temp value which is used to query the firebase db.
+   * @author: Seng Group 40
+   * @param {event information} info Event object that was clicked
+   *
+   */
+  const handleClickOpen = (info) => {
+    setOpen(true);
+
+    document.getElementById("modal-title").innerHTML =
+      ' <DialogTitle id="modal-title"> <h3>' +
+      info.event.title +
+      "</ h3> </DialogTitle>";
+
+    document.getElementById("doctor-name").innerHTML =
+      ' <DialogContentText  id="doctor-name">' +
+      "<h5>" +
+      "Doctor: " +
+      info.event.extendedProps.docName +
+      "<h5>" +
+      "</DialogContentText>";
+
+    document.getElementById("start-time").innerHTML =
+      ' <DialogContentText  id="start-time">' +
+      "<h5>" +
+      "Start Time: " +
+      info.event.start +
+      "<h5>" +
+      "</DialogContentText>";
+
+    document.getElementById("end-time").innerHTML =
+      ' <DialogContentText  id="end-time">' +
+      "<h5>" +
+      "End Time: " +
+      info.event.end +
+      "<h5>" +
+      "</DialogContentText>";
+
+    if (info.event.extendedProps.status === "open") {
+      document.getElementById("buttonCancel").style.visibility = "hidden";
+      document.getElementById("buttonBook").style.visibility = "hidden";
+    } else if (info.event.extendedProps.status === "booked") {
+      document.getElementById("buttonBook").style.visibility = "hidden";
+    }
+
+    setTemp(info.event);
   };
-
-  function handleEventClick(info) {
-    var calEvent = db.collection("Appointment").doc(info.event.id);
-
-    calEvent.get().then(function (doc) {
-      if (doc.exists) {
-        if (doc.data().status === "pending") {
-          if (window.confirm("Do you want to confirm this appointment?")) {
-            calEvent.update({
+  
+  /**
+   * The handleBook function will be used when a user clicks to book the
+   * appointment. When the button is clicked, the events and firebase db
+   * are updated accordingly.
+   * @author: Seng Group 40
+   *
+   */
+  const handleBook = () => {
+    setOpen(false);
+    let query = db.collection("Appointment").doc(temp.id);
+    query
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          if (doc.data().status === "pending") {
+            query.update({
               status: "booked",
-              title: "Confirmed Appointment",
+              title: "Booked - " + doc.data().docName,
             });
-            alert("Appointment Confirmed"); // done
           }
         }
-      }
-    });
+      })
+      .then((_) => {
+        setEvents([]);
+        getEvents();
+      });
+    setTemp({});
+  };
+
+  /**
+   * The handleCancel function will be used when a user clicks to cancel the
+   * appointment. When the button is clicked, the events and firebase db
+   * are updated accordingly.
+   * @author: Seng Group 40
+   *
+   */
+  const handleCancel = () => {
+    setOpen(false);
+    let query = db.collection("Appointment").doc(temp.id);
+    query
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          if (
+            doc.data().status === "booked" ||
+            doc.data().status === "pending"
+          ) {
+            query.update({
+              status: "open",
+              patientID: "N/A",
+              title: "Open - " + doc.data().docName,
+            });
+          }
+        }
+      })
+      .then((_) => {
+        setEvents([]);
+        getEvents();
+      });
+    setTemp({});
+  };
+
+  /**
+   * The handleClosefunction will be used when a user clicks to exit the modal
+   * @author: Seng Group 40
+   *
+   */
+  const handleClose = () => {
+    setOpen(false);
+    setTemp({});
+  };
+
+  /**
+   * The createEvent function will read the data queried from firebase
+   * and populate the event with the id, docName, start, and end time. It also
+   * sets the colour of the event based on the event status.
+   * @author: Seng Group 40
+   * @param {appointment Data} appointmentData details about appointment
+   * @param {event id} id the appointment id tag
+   * @return {event} the newly created calendar event
+   */
+  function createCalenderEvent(appointmentData, id) {
+    const event = appointmentData;
+    event.start = new Date(0).setUTCSeconds(appointmentData.start.seconds);
+    event.end = new Date(0).setUTCSeconds(appointmentData.end.seconds);
+    event.id = id;
+    event.docName = "Dr. " + event.docName;
+
+    switch (event.status) {
+      case "booked":
+        event.color = "blue";
+        break;
+      case "pending":
+        event.color = "orange";
+        break;
+      default:
+        event.color = "green";
+        break;
+    }
+    return event;
   }
 
   /**
-   * Retrieves all events related to the doctos
+   * The getEvents function will query the firebase db to find all matching
+   * appointments for the doctors the nurse is assigned to.
+   * It checks to see if the doctorID of all appointments in the firebase
+   * matches with any of the doctors in the docList of the nurse,
+   * if it does, then it creates the events and pushes them into the
+   * docApt array which is used to setEvents.
+   * @author: Seng Group 40
+   *
    */
-  // function getEvents() {
-  //   const docApt = [];
-  //   //console.log(currentUser.uid);
+  function getEvents() {
+    let docApt = [];
 
-  //   var queryNurse = db.collection("Users").where("uid", "==", currentUser.uid);
-  //   queryNurse.get().then(function (doc) {
-  //     doc.forEach((d) => {
-  //       let docID = d.data().doctorID;
+    const queryNurse = db.collection("Users").doc(currentUser.uid);
 
-  //       var queryDoctor = db
-  //         .collection("Appointment")
-  //         .where("doctorID", "==", docID);
-  //       queryDoctor
-  //         .get()
-  //         .then(function (querySnapshot) {
-  //           querySnapshot.forEach((doc) => {
-  //             // Reformating time format for full calendar event
+    queryNurse.get().then((nurse) => {
+      const docList = nurse.data().docList;
 
-  //             // Seting the Unix time
-  //             const epochStart = doc.data().start.seconds;
-  //             const epochEnd = doc.data().end.seconds;
+      db.collection("Appointment")
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((appointment) => {
+            const doctorID = appointment.data().doctorID;
 
-  //             // Initilizing new Date objets
-  //             let start = new Date(0);
-  //             let end = new Date(0);
+            if (docList.includes(doctorID)) {
+              let event = createCalenderEvent(
+                appointment.data(),
+                appointment.id
+              );
+              docApt.push(event);
+            }
+          });
+        })
+        .then(() => {
+          setEvents(docApt);
+        });
+    });
+  }
 
-  //             // Set date object times to Unix time from event object
-  //             start.setUTCSeconds(epochStart);
-  //             end.setUTCSeconds(epochEnd);
-
-  //             const event = doc.data();
-  //             event.start = start;
-  //             event.end = end;
-  //             event.id = doc.id;
-
-  //             // Set the event colour depending on its status
-  //             if (doc.data().status === "booked") {
-  //               event.color = "blue"; // Blue
-  //             } else if (doc.data().status === "pending") {
-  //               event.color = "orange"; // Yellow
-  //             }
-
-  //             docApt.push(event);
-  //           });
-  //         })
-  //         .then(() => {
-  //           setEvents(docApt);
-  //         });
-  //     });
-  //   });
-  // }
-
-  // useEffect(() => {
-  //   getEvents(); // Change event state and mount
-  // }, []);
+  useEffect(() => {
+    getEvents(); // Change event state and mount
+  }, []);
 
   // Render view
   return (
-    <div className="calendar">
-      <FullCalendar {...options} events={events} />
-    </div>
+    <>
+      <div style={{ paddingTop: 20 }}>
+        <FullCalendar
+          defaultView="timeGridWeek"
+          header={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+          }}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          editable={false}
+          handleWindowResize={true}
+          events={events}
+          themeSystem="bootstrap"
+          allDay={true}
+          aspectRatio={2}
+          displayEventEnd={true}
+          eventClick={handleClickOpen}
+        />
+      </div>
+      <Dialog open={open} onClick={handleClose}>
+        <DialogTitle disableTypography id="modal-title">
+          <h3> Modal Title </h3>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="doctor-name">
+            Appointment Content goes here
+          </DialogContentText>
+          <DialogContentText id="start-time">
+            Appointment Content goes here
+          </DialogContentText>
+          <DialogContentText id="end-time">
+            Appointment Content goes here
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            id="buttonCancel"
+            variant="outlined"
+            onClick={handleCancel}
+            color="secondary"
+          >
+            Deny Appointment
+          </Button>
+          <Button
+            id="buttonBook"
+            variant="outlined"
+            onClick={handleBook}
+            color="primary"
+          >
+            Confirm Appointment
+          </Button>
+          <Button
+            id="buttonExit"
+            variant="outlined"
+            onClick={handleClose}
+            color="secondary"
+          >
+            Exit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
-}
+};
